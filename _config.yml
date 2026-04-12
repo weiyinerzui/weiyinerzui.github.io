@@ -28,8 +28,6 @@ navigation:
     url: /archive
   - name: 标签
     url: /tags
-  - name: SBTI 人格测试
-    url: /sbti.html
 
 
 # Pagination
