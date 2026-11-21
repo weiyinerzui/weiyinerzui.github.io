@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>年龄谜题闯关 · 小亮和妹妹</title>
+<style>
+:root{
+  --bg:#F2F6FF;
+  --card:#FFFFFF;
+  --ink:#16233B;
+  --muted:#6B7A99;
+  --brand:#3D6BFF;
+  --brand-l:#EAF0FF;
+  --green:#12B37A;
+  --green-l:#E4F8F0;
+  --orange:#FF8A3D;
+  --orange-l:#FFF2E8;
+  --red:#EF4D5A;
+  --red-l:#FFECEE;
+  --line:#E4EAF6;
+  --shadow:0 10px 28px rgba(22,35,59,.08), 0 2px 6px rgba(22,35,59,.04);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+  background-image:
+    radial-gradient(900px 520px at 8% -12%, #E7EFFF 0%, rgba(231,239,255,0) 62%),
+    radial-gradient(760px 480px at 102% 2%, #FFF0E4 0%, rgba(255,240,228,0) 58%);
+  background-attachment:fixed;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.app{max-width:740px;margin:0 auto;padding:12px 16px 132px}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px 14px}
+.dots{display:flex;gap:7px;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:#CBD6EC;border:0;padding:0;cursor:pointer;transition:.2s}
+.dot.on{background:var(--brand);width:22px;border-radius:5px}
+.dot.done{background:#9FB6F5}
+.icon-btn{border:0;background:#fff;box-shadow:var(--shadow);width:38px;height:38px;border-radius:12px;font-size:16px;cursor:pointer}
+
+/* ---------- screens ---------- */
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .34s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.kicker{font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--brand);background:var(--brand-l);
+  display:inline-block;padding:5px 11px;border-radius:8px;margin-bottom:12px}
+h2{font-size:clamp(20px,5.2vw,26px);line-height:1.35;margin:0 0 10px;letter-spacing:-.01em}
+.lead{font-size:15.5px;line-height:1.72;color:var(--muted);margin:0 0 16px}
+.lead b{color:var(--ink)}
+.card{background:var(--card);border-radius:22px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
+.card.tight{padding:16px}
+hr.sep{border:0;border-top:1px dashed var(--line);margin:18px 0}
+
+/* ---------- problem card ---------- */
+.prob{background:linear-gradient(180deg,#FFFFFF,#FBFDFF);border:1px solid var(--line);border-radius:20px;padding:18px 18px 16px}
+.prob p{margin:0;font-size:17px;line-height:1.95}
+.hl{background:linear-gradient(180deg,transparent 58%,#FFE7A8 58%);padding:0 2px;font-weight:800}
+.hl2{background:linear-gradient(180deg,transparent 58%,#CDEEFF 58%);padding:0 2px;font-weight:800}
+
+/* ---------- bar model ---------- */
+.bm{display:flex;flex-direction:column;gap:12px}
+.bm-row{display:grid;grid-template-columns:78px minmax(0,1fr);gap:10px;align-items:center}
+.bm-who{font-size:14px;font-weight:800;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.bm-who .ch{font-size:16px}
+.bm-track{position:relative;height:34px;display:flex;border-radius:9px;min-width:0}
+.seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800;
+  min-width:0;overflow:hidden;white-space:nowrap;
+  color:#fff;transition:width .5s cubic-bezier(.34,1.3,.64,1),background .3s,color .3s}
+.seg+.seg{border-left:2px solid #fff}
+.seg:first-child{border-radius:9px 0 0 9px}
+.seg:last-child{border-radius:0 9px 9px 0}
+.s-green{background:linear-gradient(180deg,#25CE8E,#12B37A)}
+.s-orange{background:linear-gradient(180deg,#FF9E58,#FF8A3D)}
+.s-gap{background:repeating-linear-gradient(45deg,#FFF7F0,#FFF7F0 6px,#FFE6D2 6px,#FFE6D2 12px);
+  border:2px dashed var(--orange)!important;border-radius:0 9px 9px 0;color:var(--orange);font-size:11px;
+  white-space:nowrap;overflow:visible}
+.s-gap.hot{cursor:pointer;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12) saturate(1.4)}}
+.s-gap.filled{background:linear-gradient(180deg,#25CE8E,#12B37A);border-color:#12B37A!important;color:#fff}
+.bm-cap{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
+.bm-cap b{color:var(--ink)}
+/* difference bracket */
+.bm-diff{height:34px;margin-top:2px}
+.diff-line{position:absolute;top:0;height:100%;border-top:2.5px dashed var(--brand);
+  border-left:2.5px dashed var(--brand);border-right:2.5px dashed var(--brand);border-radius:6px 6px 0 0;
+  transition:width .55s cubic-bezier(.34,1.3,.64,1),border-color .3s,left .55s}
+.diff-cap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:var(--brand);color:#fff;font-size:12px;font-weight:800;padding:3px 9px;border-radius:7px;white-space:nowrap;transition:.3s}
+.diff-line.ok{border-color:var(--green)}
+.diff-line.ok .diff-cap{background:var(--green)}
+
+/* ---------- options ---------- */
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.opt{flex:1 1 92px;min-height:58px;border-radius:16px;border:2px solid var(--line);background:#fff;
+  font-size:20px;font-weight:800;color:var(--ink);cursor:pointer;transition:.16s;font-family:inherit}
+.opt:hover:not(:disabled){border-color:#B9C9EE;transform:translateY(-1px)}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--green-l);border-color:var(--green);color:#0B8B5F}
+.opt.wrong{background:var(--red-l);border-color:#F7B4BA;color:#B9323E;opacity:.85}
+.opt.dim{opacity:.35}
+
+/* ---------- feedback ---------- */
+.fb{display:none;margin-top:14px;font-size:14.5px;line-height:1.7;border-radius:14px;padding:13px 15px;font-weight:600}
+.fb.show{display:block;animation:fadeUp .26s ease both}
+.fb.ok{background:var(--green-l);color:#0B7A55}
+.fb.warn{background:var(--red-l);color:#A8303B}
+.fb.tip{background:var(--brand-l);color:#2A4FD6}
+
+/* ---------- misc ---------- */
+.btn{border:0;border-radius:15px;padding:14px 22px;font-size:16px;font-weight:800;cursor:pointer;
+  font-family:inherit;transition:.16s}
+.btn.primary{background:linear-gradient(180deg,#4E7BFF,#3D6BFF);color:#fff;box-shadow:0 8px 20px rgba(61,107,255,.32)}
+.btn.primary:active{transform:translateY(1px);box-shadow:0 4px 12px rgba(61,107,255,.3)}
+.btn.ghost{background:#fff;color:var(--muted);box-shadow:var(--shadow)}
+.btn.small{padding:11px 16px;font-size:14.5px;border-radius:12px}
+.btn:disabled{opacity:.4;cursor:default}
+
+.tip-line{display:flex;gap:9px;align-items:flex-start;background:var(--brand-l);border-radius:14px;
+  padding:12px 14px;font-size:14px;line-height:1.68;color:#2A4FD6;font-weight:600;margin-top:14px}
+.tip-line .ic{flex:0 0 auto}
+
+.eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;font-weight:800;
+  background:#F6F9FF;border:1px solid var(--line);border-radius:11px;padding:11px 14px;display:inline-block;margin:6px 6px 0 0}
+.eq.b{background:var(--brand-l);border-color:#CBDCFF;color:#2A4FD6}
+.eq.g{background:var(--green-l);border-color:#BDEBD8;color:#0B7A55}
+.eq.o{background:var(--orange-l);border-color:#FFDCC2;color:#C25E12}
+
+.answer-big{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 4px}
+.abox{flex:1 1 140px;background:var(--green-l);border-radius:16px;padding:14px 16px;text-align:center}
+.abox .who{font-size:13.5px;font-weight:800;color:#0B7A55;opacity:.85}
+.abox .v{font-size:30px;font-weight:900;color:#0B7A55;line-height:1.25}
+.abox .v small{font-size:14px;font-weight:800}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;height:196px;margin:18px 0 2px;user-select:none}
+.tl-track{position:absolute;left:0;right:0;top:76px;height:4px;background:#DCE5F7;border-radius:2px}
+.tl-mark{position:absolute;top:0;width:0}
+.tl-dot{position:absolute;left:-8px;top:70px;width:16px;height:16px;border-radius:50%;
+  box-shadow:0 0 0 4px #fff;animation:pop .4s cubic-bezier(.34,1.5,.64,1) both}
+.tl-dot.g{background:var(--green)}
+.tl-dot.a{background:var(--brand)}
+.tl-dot.o{background:var(--orange)}
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.tl-lab{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:auto;text-align:center;
+  font-size:12.5px;line-height:1.45;font-weight:700;color:var(--muted);white-space:nowrap}
+.tl-lab i{font-style:normal;color:var(--ink)}
+.tl-mark.l .tl-lab{transform:translateX(-10%)}
+.tl-mark.r .tl-lab{transform:translateX(-90%)}
+.tl-arrow{position:absolute;top:94px;height:20px;border-top:2px dashed #93AEEB;animation:grow .5s ease both;transform-origin:left}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.tl-arrow::after{content:"";position:absolute;right:-1px;top:-6px;width:0;height:0;
+  border:5px solid transparent;border-left-color:#93AEEB;border-right:0}
+.tl-arrow span{position:absolute;left:50%;transform:translateX(-50%);top:6px;font-size:12px;font-weight:800;color:#5274C7;white-space:nowrap}
+.tl-brace{position:absolute;top:140px;height:22px;border:2px solid var(--orange);border-top:0;
+  border-radius:0 0 12px 12px;animation:fadeUp .45s ease both}
+.tl-brace span{position:absolute;left:50%;transform:translateX(-50%);bottom:-10px;background:var(--orange);
+  color:#fff;font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:8px;white-space:nowrap}
+
+/* ---------- level 3 game ---------- */
+.age-panel{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.age-box{flex:1 1 60px;min-width:0;background:#F7FAFF;border:2px solid var(--line);border-radius:16px;padding:11px 8px;text-align:center}
+.age-box.hl{background:var(--brand-l);border-color:#C9DAFF}
+.age-box .who{font-size:12.5px;font-weight:800;color:var(--muted);white-space:nowrap}
+.age-box.hl .who{color:#2A4FD6}
+.age-box .num{font-size:26px;font-weight:900;line-height:1.3;font-variant-numeric:tabular-nums}
+.age-box .num i{font-style:normal;font-size:13px;font-weight:800;color:var(--muted);margin-left:2px}
+.age-box.hit{background:var(--green-l);border-color:var(--green)}
+.age-box.hit .who,.age-box.hit .num,.age-box.hit .num i{color:#0B7A55}
+
+.slider{width:100%;-webkit-appearance:none;appearance:none;height:14px;border-radius:8px;
+  background:linear-gradient(90deg,#CFE0FF,#FFD9C0);outline:none;margin:8px 0 2px}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:38px;height:38px;border-radius:50%;
+  background:#fff;border:5px solid var(--brand);box-shadow:0 4px 12px rgba(61,107,255,.4);cursor:grab}
+.slider::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:5px solid var(--brand);
+  box-shadow:0 4px 12px rgba(61,107,255,.4);cursor:grab}
+.slider:disabled{opacity:.6}
+.slider-scale{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-weight:700;padding:0 2px}
+
+.aim{position:relative;height:30px;margin-top:18px;background:#F1F5FD;border-radius:10px;overflow:hidden}
+.aim-fill{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,#8FB0FF,#3D6BFF);
+  transition:width .3s cubic-bezier(.34,1.3,.64,1),background .25s}
+.aim-fill.hit{background:linear-gradient(90deg,#4FD8A6,#12B37A)}
+.aim-target{position:absolute;top:0;bottom:0;width:3px;background:var(--orange);border-radius:2px}
+.aim-target span{position:absolute;left:50%;top:0;transform:translate(-50%,0);background:var(--orange);color:#fff;
+  font-size:11.5px;font-weight:800;padding:2px 7px;border-radius:0 0 6px 6px;white-space:nowrap}
+
+/* ---------- worked example steps ---------- */
+.reveal{display:none}
+.reveal.show{display:block;animation:fadeUp .38s ease both}
+.step-line{display:flex;gap:11px;align-items:flex-start;margin-top:14px;font-size:15.5px;line-height:1.7}
+.step-no{flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;
+  font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step-no.g{background:var(--green)}
+.navrow{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+
+/* ---------- fill in blanks ---------- */
+.fill-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding:13px 0;border-bottom:1px dashed var(--line);font-size:15.5px;font-weight:700}
+.fill-row:last-child{border-bottom:0}
+.fi{display:inline-flex;align-items:center;gap:6px}
+.blank{width:70px;height:46px;border-radius:12px;border:2px solid #CBD9F2;background:#F9FBFF;
+  text-align:center;font-size:19px;font-weight:900;font-family:inherit;color:var(--ink);outline:none;transition:.16s}
+.blank:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 4px rgba(61,107,255,.13)}
+.blank.ok{border-color:var(--green);background:var(--green-l);color:#0B7A55}
+.mark{font-size:12.5px;font-weight:800;min-width:30px}
+.mark.ok{color:var(--green)}
+.mark.warn{color:#C25E12}
+.hint{display:none;font-size:12.5px;color:#C25E12;font-weight:700;width:100%}
+.hint.show{display:block}
+
+/* ---------- footer nav ---------- */
+.footer-nav{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(242,246,255,0),rgba(242,246,255,.92) 38%,#F2F6FF 70%);z-index:20}
+.footer-inner{max-width:740px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.footer-inner .btn{flex:1}
+.footer-inner .btn.ghost{flex:0 0 auto}
+/* 某些托管平台会在右下角注入自己的小徽章，这里给它腾位置，避免挡住按钮 */
+body.has-badge .footer-nav{bottom:48px}
+body.has-badge .app{padding-bottom:184px}
+@media (max-width:420px){
+  .bm-row{grid-template-columns:66px minmax(0,1fr)}
+  .opt{flex:1 1 74px;font-size:18px}
+  .blank{width:58px;height:44px;font-size:17px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="dots" id="dots"></div>
+    <button class="icon-btn" id="muteBtn" aria-label="声音开关">🔊</button>
+  </div>
+
+  <main id="stage">
+
+    <!-- ================= 0 · 开场 ================= -->
+    <section class="screen active" data-i="0">
+      <div class="kicker">年龄谜题闯关</div>
+      <h2>小亮和妹妹，今年各几岁？</h2>
+      <div class="prob">
+        <p>小亮今年的年龄比妹妹的 <span class="hl">3 倍小 2 岁</span>，小亮 <span class="hl2">8 年前</span> 的年龄与妹妹 <span class="hl2">6 年后</span> 的年龄相等。小亮和妹妹今年各几岁？</p>
+      </div>
+      <div class="lead" style="margin-top:16px">
+        这句话有点长，没关系。<br>
+        我们把它拆成 <b>5 个小关卡</b>，一关只做一件事。<br>
+        答错不会被扣分，可以一直试。
+      </div>
+      <div class="tip-line"><span class="ic">💡</span><span>手边有纸和笔的话，拿出来画一画，会更快。</span></div>
+    </section>
+
+    <!-- ================= 1 · 第一关 ================= -->
+    <section class="screen" data-i="1">
+      <div class="kicker">第 1 关 · 先看懂第一句话</div>
+      <h2>“比妹妹的 3 倍小 2 岁” 是什么意思？</h2>
+      <p class="lead">把<b>妹妹的年龄</b>看成 <b>1 份</b>。小亮就是这样的 <b>3 份</b>，只不过最后还差 2 岁没满。</p>
+
+      <div class="card">
+        <div class="bm">
+          <div class="bm-row">
+            <div class="bm-who"><span class="ch">👧</span>妹妹</div>
+            <div class="bm-track">
+              <div class="seg s-green" style="width:33.333%">5 岁</div>
+            </div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-who"><span class="ch">🧑</span>小亮</div>
+            <div class="bm-track">
+              <div class="seg s-orange" style="width:33.333%">5</div>
+              <div class="seg s-orange" style="width:33.334%">5</div>
+              <div class="seg s-orange" style="width:20%">3</div>
+              <div class="seg s-gap" style="width:13.333%">少2</div>
+            </div>
+          </div>
+        </div>
+        <div class="bm-cap">
+          如果妹妹 <b>5 岁</b>：3 份就是 5 + 5 + 5 = <b>15 岁</b>；最后一段少 2 岁，只剩 3 岁，所以小亮是 <b>13 岁</b>。
+        </div>
+        <div style="margin-top:12px">
+          <span class="eq">5 × 3 = 15</span>
+          <span class="eq">15 − 2 = 13</span>
+        </div>
+      </div>
+
+      <div class="qcard" id="q1a">
+        <div class="card tight" data-good="对！6 × 3 = 18，18 − 2 = 16。你已经在用同一套办法了。">
+          <div style="font-weight:800;font-size:16px">轮到你了：如果妹妹 <b>6 岁</b>，小亮几岁？</div>
+          <div class="opts">
+            <button class="opt" data-ok="0" data-hint="再读一遍：先算 3 倍（6 × 3 = 18），再减 2 哦。">18</button>
+            <button class="opt" data-ok="1">16</button>
+            <button class="opt" data-ok="0" data-hint="20 是把 3 倍算成了 22 吗？慢一点：6 × 3 = 18，再减 2。">20</button>
+          </div>
+          <div class="fb"></div>
+        </div>
+      </div>
+
+      <div class="qcard" id="q1b">
+        <div class="card tight" data-good="厉害！7 × 3 = 21，21 − 2 = 19。你已经把这个规则用熟了。">
+          <div style="font-weight:800;font-size:16px">再来一个：如果妹妹 <b>7 岁</b>，小亮几岁？</div>
+          <div class="opts">
+            <button class="opt" data-ok="0" data-hint="先算 3 份：7 × 3 = 21，然后别忘了减 2。">21</button>
+            <button class="opt" data-ok="0" data-hint="比 3 倍还大，说明你把“少 2 岁”做成了“多 2 岁”。">23</button>
+            <button class="opt" data-ok="1">19</button>
+          </div>
+          <div class="fb"></div>
+        </div>
+      </div>
+
+      <div class="tip-line"><span class="ic">📌</span><span>记住这条关系：<b>小亮 = 妹妹 × 3 − 2</b>。只要知道妹妹几岁，小亮就能算出来。</span></div>
+    </section>
+
+    <!-- ================= 2 · 第二关 ================= -->
+    <section class="screen" data-i="2">
+      <div class="kicker">第 2 关 · 看懂第二句话</div>
+      <h2>“8 年前” 和 “6 年后”，说的是同一个年龄</h2>
+      <p class="lead">小亮 8 年前的年龄 ＝ 妹妹 6 年后的年龄。<br>也就是说：<b>有某两个时刻，他们俩正好一样大</b>。</p>
+
+      <button class="btn primary" id="tlBtn" style="width:100%">把它摆到时间轴上看看 →</button>
+
+      <div id="tlBox" hidden style="margin-top:6px">
+        <div class="card">
+          <div class="tl">
+            <div class="tl-track"></div>
+            <div class="tl-mark l" style="left:6%">
+              <div class="tl-dot g"></div>
+              <div class="tl-lab">妹妹今年<br><i>?</i> 岁</div>
+            </div>
+            <div class="tl-mark" style="left:40%">
+              <div class="tl-dot a" style="animation-delay:.12s"></div>
+              <div class="tl-lab">这一刻<br>两人一样大</div>
+            </div>
+            <div class="tl-mark r" style="left:85.3%">
+              <div class="tl-dot o" style="animation-delay:.24s"></div>
+              <div class="tl-lab">小亮今年<br><i>?</i> 岁</div>
+            </div>
+            <div class="tl-arrow" style="left:6%;width:34%;animation-delay:.3s"><span>过 6 年</span></div>
+            <div class="tl-arrow" style="left:40%;width:45.3%;animation-delay:.45s"><span>过 8 年</span></div>
+            <div class="tl-brace" style="left:6%;width:79.3%;animation-delay:.7s"><span>一共 6 + 8 = 14 年</span></div>
+          </div>
+          <div class="bm-cap" style="margin-top:6px">
+            妹妹要 <b>再过 6 年</b> 才能到那个年龄；小亮的那个年龄是 <b>8 年前</b> 的，所以他现在已经比那个年龄大了 8 岁。<br>
+            两头加起来：他们的年龄差 = <b>14 岁</b>。
+          </div>
+        </div>
+
+        <div class="qcard" id="q2">
+          <div class="card tight" data-good="太棒了 —— 6 年 + 8 年 = 14 年。这说明小亮今年比妹妹大 14 岁，这个差不管过多少年都不会变。">
+            <div style="font-weight:800;font-size:16px">那，小亮今年比妹妹大几岁？</div>
+            <div class="opts">
+              <button class="opt" data-ok="0" data-hint="8 年只是小亮那一头哦，妹妹这一头还有 6 年呢。">8</button>
+              <button class="opt" data-ok="1">14</button>
+              <button class="opt" data-ok="0" data-hint="6 年只是妹妹那一头，别忘了小亮那边的 8 年。">6</button>
+              <button class="opt" data-ok="0" data-hint="2 是“3 倍少 2 岁”里的 2，和这句话没关系。">2</button>
+            </div>
+            <div class="fb"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3 · 第三关 ================= -->
+    <section class="screen" data-i="3">
+      <div class="kicker">第 3 关 · 试出来</div>
+      <h2>妹妹几岁时，相差正好 14 岁？</h2>
+      <p class="lead">拖动滑块改变妹妹的年龄，小亮的年龄会跟着按规则变化。<br>看看什么时候能正好命中 <b>14 岁</b>。</p>
+
+      <div class="card">
+        <div class="age-panel">
+          <div class="age-box"><div class="who">👧 妹妹</div><div class="num"><span id="g1">5</span><i>岁</i></div></div>
+          <div class="age-box"><div class="who">🧑 小亮</div><div class="num"><span id="g2">13</span><i>岁</i></div></div>
+          <div class="age-box hl" id="g3box"><div class="who">相差</div><div class="num"><span id="g3">8</span><i>岁</i></div></div>
+        </div>
+        <input id="slider" class="slider" type="range" min="2" max="14" step="1" value="5" aria-label="妹妹的年龄">
+        <div class="slider-scale"><span>2 岁</span><span>8 岁</span><span>14 岁</span></div>
+        <div class="aim">
+          <div class="aim-fill" id="aimFill"></div>
+          <div class="aim-target" style="left:53.85%"><span>目标 14 岁</span></div>
+        </div>
+        <div class="fb show tip" id="gfb">相差 8 岁，比 14 岁少 6 岁 —— 让妹妹再大一点。</div>
+      </div>
+
+      <div class="qcard" id="q3" hidden>
+        <div class="card tight" data-good="对！妹妹每多 1 岁，小亮就多 3 岁（因为小亮 = 妹妹 × 3 − 2），所以他们的差每次多 2 岁。">
+          <div style="font-weight:800;font-size:16px">刚才妹妹从 7 岁变到 8 岁，相差从 12 岁变成 14 岁。<br>妹妹每多 1 岁，相差会多几岁？</div>
+          <div class="opts">
+            <button class="opt" data-ok="0" data-hint="小亮比妹妹多长的那部分，就是差变大的原因。">1</button>
+            <button class="opt" data-ok="1">2</button>
+            <button class="opt" data-ok="0" data-hint="3 是小亮自己多的岁数，问的是“差”多几岁。">3</button>
+          </div>
+          <div class="fb"></div>
+        </div>
+        <div class="card tight" id="bridge" hidden>
+          <div style="font-weight:800;font-size:15.5px;line-height:1.7">
+            🎯 于是有一个更快的办法：<br>
+            相差 14 岁，再加上小亮"没满的那 2 岁"，就正好是 <b>2 份</b>。
+          </div>
+          <div style="margin-top:10px">
+            <span class="eq o">14 + 2 = 16</span>
+            <span class="eq g">2 份 = 16 岁</span>
+          </div>
+          <div class="bm-cap">下一关，我们用线段图把这件事画清楚。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 4 · 第四关 ================= -->
+    <section class="screen" data-i="4">
+      <div class="kicker">第 4 关 · 用线段图算出来</div>
+      <h2>把两条线索画在同一张图上</h2>
+      <p class="lead">妹妹的年龄是 <b>1 份</b>（还不知道多少），小亮是 <b>3 份少 2 岁</b>。</p>
+
+      <div class="card">
+        <div class="bm">
+          <div class="bm-row">
+            <div class="bm-who"><span class="ch">👧</span>妹妹</div>
+            <div class="bm-track">
+              <div class="seg s-green" style="width:33.333%">1 份</div>
+            </div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-who"><span class="ch">🧑</span>小亮</div>
+            <div class="bm-track">
+              <div class="seg s-orange" style="width:33.333%">1 份</div>
+              <div class="seg s-orange" style="width:33.334%">1 份</div>
+              <div class="seg s-orange" style="width:21.333%"></div>
+              <div class="seg s-gap" id="gapSeg" style="width:12%">少2</div>
+            </div>
+          </div>
+          <div class="bm-row">
+            <div class="bm-who"></div>
+            <div class="bm-track bm-diff">
+              <div class="diff-line" id="diffLine" style="left:33.333%;width:58.667%">
+                <span class="diff-cap" id="diffCap">相差 14 岁</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" data-l4="1">
+          <div class="step-line"><div class="step-no">1</div>
+            <div>上一关我们知道：两人 <b>相差 14 岁</b>。图下方那个虚线框，量出来的就是这个差。</div>
+          </div>
+        </div>
+
+        <div class="reveal" data-l4="2">
+          <div class="step-line"><div class="step-no">2</div>
+            <div>小亮这条是 3 份，但最后缺了 2 岁 —— 所以那条 14 岁的差，其实是 <b>2 份再剪掉 2 岁</b>。</div>
+          </div>
+          <div class="tip-line"><span class="ic">🔍</span><span>换句话说：<b>14 岁 = 2 份 − 2 岁</b>。</span></div>
+        </div>
+
+        <div class="reveal" data-l4="3">
+          <div class="step-line"><div class="step-no">3</div>
+            <div>那就把缺的这 2 岁 <b>补上去</b> —— <span style="color:var(--orange);font-weight:900">点一下那个灰色缺口</span>。</div>
+          </div>
+        </div>
+
+        <div class="reveal" data-l4="4">
+          <div class="step-line"><div class="step-no">4</div>
+            <div>缺口补上后，差变成 <b>16 岁</b>，它正好是 <b>2 份</b>。</div>
+          </div>
+          <div style="margin-top:8px">
+            <span class="eq o">14 + 2 = 16</span>
+            <span class="eq g">2 份 = 16 岁</span>
+          </div>
+        </div>
+
+        <div class="reveal" data-l4="5">
+          <div class="step-line"><div class="step-no g">5</div>
+            <div>2 份是 16 岁，那 1 份就是：</div>
+          </div>
+          <div style="margin-top:8px">
+            <span class="eq b">16 ÷ 2 = 8 → 妹妹 8 岁</span>
+          </div>
+        </div>
+
+        <div class="reveal" data-l4="6">
+          <div class="step-line"><div class="step-no g">6</div>
+            <div>小亮是 3 份少 2 岁，把 8 代进去：</div>
+          </div>
+          <div style="margin-top:8px">
+            <span class="eq">8 × 3 = 24</span>
+            <span class="eq">24 − 2 = 22 → 小亮 22 岁</span>
+          </div>
+          <div class="answer-big" style="margin-top:14px">
+            <div class="abox"><div class="who">👧 妹妹</div><div class="v">8<small> 岁</small></div></div>
+            <div class="abox"><div class="who">🧑 小亮</div><div class="v">22<small> 岁</small></div></div>
+          </div>
+          <div class="tip-line" style="background:var(--green-l);color:#0B7A55">
+            <span class="ic">✅</span>
+            <span>验算：22 − 8 = 14（小亮大 14 岁）；22 − 8 = 14，8 + 6 = 14 —— 两个时刻真的一样大，答案对了。</span>
+          </div>
+        </div>
+
+        <div class="navrow">
+          <button class="btn primary small" id="l4next">下一步</button>
+          <span style="font-size:12.5px;color:var(--muted);font-weight:700" id="l4tag">1 / 6</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 5 · 第五关 ================= -->
+    <section class="screen" data-i="5">
+      <div class="kicker">第 5 关 · 换一题试试</div>
+      <h2>同样的思路，换两个人物</h2>
+      <div class="prob">
+        <p>哥哥今年的年龄比弟弟的 <span class="hl">4 倍小 3 岁</span>，哥哥 <span class="hl2">5 年前</span> 的年龄与弟弟 <span class="hl2">7 年后</span> 的年龄相等。哥哥和弟弟今年各几岁？</p>
+      </div>
+      <p class="lead" style="margin-top:14px">照着上一关的办法，一步一步填空（填对会自动变绿）。</p>
+
+      <div class="card">
+        <div class="fill-row">
+          <span>① 哥哥比弟弟大</span>
+          <span class="fi"><input class="blank" inputmode="numeric" maxlength="2" data-ans="12" aria-label="年龄差"><span>岁</span><span class="mark"></span></span>
+          <span class="hint">提示：把“5 年前”和“7 年后”两个数字加起来。</span>
+        </div>
+        <div class="fill-row">
+          <span>② 补上 3 岁后</span>
+          <span class="fi"><input class="blank" inputmode="numeric" maxlength="2" data-ans="15" aria-label="补上后的差"><span>岁</span><span class="mark"></span></span>
+          <span class="hint">提示：相差会变成多少岁？把上一格的结果再加 3。</span>
+        </div>
+        <div class="fill-row">
+          <span>③ 它正好是</span>
+          <span class="fi"><input class="blank" inputmode="numeric" maxlength="2" data-ans="3" aria-label="份数"><span>份</span><span class="mark"></span></span>
+          <span class="hint">提示：4 倍就是 4 份，再减去弟弟自己的 1 份。</span>
+        </div>
+        <div class="fill-row">
+          <span>④ 弟弟</span>
+          <span class="fi"><input class="blank" inputmode="numeric" maxlength="2" data-ans="5" aria-label="弟弟年龄"><span>岁</span><span class="mark"></span></span>
+          <span class="hint">提示：15 ÷ 3 = ?</span>
+        </div>
+        <div class="fill-row">
+          <span>⑤ 哥哥</span>
+          <span class="fi"><input class="blank" inputmode="numeric" maxlength="2" data-ans="17" aria-label="哥哥年龄"><span>岁</span><span class="mark"></span></span>
+          <span class="hint">提示：哥哥 = 弟弟 × 4 − 3。</span>
+        </div>
+        <div class="navrow">
+          <button class="btn ghost small" id="showAns5">看答案</button>
+          <span style="font-size:12.5px;color:var(--muted);font-weight:700">做不出来也没关系，看答案也是一种学习。</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6 · 通关 ================= -->
+    <section class="screen" data-i="6">
+      <div class="kicker">通关 🎉</div>
+      <h2>你用的方法，可以带走</h2>
+      <div class="card">
+        <div class="step-line"><div class="step-no">1</div><div><b>两句线索分开读。</b>一句告诉我“倍数关系”，一句告诉我“年龄差”。</div></div>
+        <div class="step-line"><div class="step-no">2</div><div><b>求年龄差就两头相加。</b>8 年前 + 6 年后 → 相差 14 岁。</div></div>
+        <div class="step-line"><div class="step-no">3</div><div><b>画线段图：</b>把缺口补平，“差 + 缺口 = 整数份”，再除以份数。</div></div>
+        <div class="answer-big" style="margin-top:18px">
+          <div class="abox"><div class="who">👧 妹妹今年</div><div class="v">8<small> 岁</small></div></div>
+          <div class="abox"><div class="who">🧑 小亮今年</div><div class="v">22<small> 岁</small></div></div>
+        </div>
+      </div>
+      <div class="tip-line"><span class="ic">🔁</span><span>想再走一遍？点下面的按钮，或者点顶部的小圆点回到任意一关。</span></div>
+      <div class="navrow"><button class="btn primary small" id="restart">从头再玩一次</button></div>
+    </section>
+
+  </main>
+</div>
+
+<div class="footer-nav">
+  <div class="footer-inner">
+    <button class="btn ghost" id="prevBtn">上一步</button>
+    <button class="btn primary" id="nextBtn">开始闯关</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 声音 ---------- */
+  var muted = false, ac = null;
+  function tone(freq, dur, delay){
+    if (muted) return;
+    try{
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      var t = ac.currentTime + (delay || 0);
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.07, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t); o.stop(t + dur + 0.03);
+    }catch(e){}
+  }
+  function ping(){ tone(880, 0.18, 0); }
+  function yay(){ tone(660, 0.16, 0); tone(990, 0.22, 0.12); }
+  document.getElementById('muteBtn').addEventListener('click', function(){
+    muted = !muted;
+    this.textContent = muted ? '🔇' : '🔊';
+  });
+
+  /* ---------- 屏幕路由 ---------- */
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.screen'));
+  var dotsBox = document.getElementById('dots');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var maxSeen = 0, cur = 0;
+
+  screens.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' on' : '');
+    b.type = 'button';
+    b.setAttribute('aria-label', '第 ' + (i + 1) + ' 页');
+    b.addEventListener('click', function(){
+      if (i <= maxSeen) go(i);
+      else flashLocked();
+    });
+    dotsBox.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function flashLocked(){
+    var d = dots[maxSeen];
+    d.style.transform = 'scale(1.6)';
+    setTimeout(function(){ d.style.transform = ''; }, 180);
+  }
+
+  function go(i){
+    i = Math.max(0, Math.min(screens.length - 1, i));
+    cur = i;
+    screens.forEach(function(s, k){ s.classList.toggle('active', k === i); });
+    dots.forEach(function(d, k){
+      d.classList.toggle('on', k === i);
+      d.classList.toggle('done', k < i);
+    });
+    maxSeen = Math.max(maxSeen, i);
+    prevBtn.disabled = (i === 0);
+    prevBtn.style.visibility = (i === 0) ? 'hidden' : 'visible';
+    nextBtn.textContent = (i === 0) ? '开始闯关' : (i === screens.length - 1 ? '再玩一次' : '继续 →');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  prevBtn.addEventListener('click', function(){ go(cur - 1); });
+  nextBtn.addEventListener('click', function(){
+    if (cur === screens.length - 1) { go(0); return; }
+    go(cur + 1);
+  });
+
+  /* ---------- 选择题通用逻辑 ---------- */
+  document.querySelectorAll('.opts').forEach(function(group){
+    group.addEventListener('click', function(ev){
+      var btn = ev.target.closest('.opt');
+      if (!btn || group.dataset.done) return;
+      var card = group.closest('.card');
+      var fb = card.querySelector('.fb');
+      if (btn.dataset.ok === '1'){
+        group.dataset.done = '1';
+        btn.classList.add('correct');
+        Array.prototype.forEach.call(group.querySelectorAll('.opt'), function(b){
+          if (b !== btn) b.classList.add('dim');
+        });
+        fb.textContent = card.dataset.good || '答对啦！';
+        fb.className = 'fb show ok';
+        yay();
+        onSolve(group);
+      } else {
+        btn.classList.add('wrong');
+        btn.disabled = true;
+        fb.textContent = btn.dataset.hint || '再想想看～';
+        fb.className = 'fb show warn';
+        tone(300, 0.12, 0);
+      }
+    });
+  });
+
+  /* 每关答对后的解锁动作 */
+  function onSolve(group){
+    if (group.id === 'q1a'){ /* nothing */ }
+    if (group.id === 'q1b'){ /* nothing */ }
+    if (group.id === 'q2'){
+      var q3 = document.querySelector('#q3');
+      if (q3 && q3.hidden) { /* 第3关在下一页，无需处理 */ }
+    }
+    if (group.id === 'q3'){
+      var bridge = document.getElementById('bridge');
+      if (bridge) { bridge.hidden = false; }
+    }
+  }
+
+  /* ---------- 第 2 关：时间轴 ---------- */
+  var tlBtn = document.getElementById('tlBtn');
+  var tlBox = document.getElementById('tlBox');
+  tlBtn.addEventListener('click', function(){
+    tlBox.hidden = false;
+    tlBtn.style.display = 'none';
+    // 触发动画重播
+    tlBox.querySelectorAll('.tl-dot, .tl-arrow, .tl-brace').forEach(function(el){
+      var a = el.style.animation;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+    tone(520, 0.14, 0);
+    var q2 = document.getElementById('q2');
+    if (q2) q2.hidden = false;
+    setTimeout(function(){
+      tlBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 120);
+  });
+
+  /* ---------- 第 3 关：猜年龄 ---------- */
+  var slider = document.getElementById('slider');
+  var g1 = document.getElementById('g1');
+  var g2 = document.getElementById('g2');
+  var g3 = document.getElementById('g3');
+  var g3box = document.getElementById('g3box');
+  var gfb = document.getElementById('gfb');
+  var aimFill = document.getElementById('aimFill');
+  var solved3 = false;
+  var MAXDIFF = 26; // 妹妹 14 岁时相差 26
+
+  function updateGame(){
+    var n = parseInt(slider.value, 10);
+    var l = n * 3 - 2;
+    var d = l - n;
+    g1.textContent = n;
+    g2.textContent = l;
+    g3.textContent = d;
+    aimFill.style.width = Math.min(100, d / MAXDIFF * 100) + '%';
+
+    if (d === 14 && !solved3){
+      solved3 = true;
+      aimFill.classList.add('hit');
+      g3box.classList.add('hit');
+      g1.closest('.age-box').classList.add('hit');
+      g2.closest('.age-box').classList.add('hit');
+      gfb.className = 'fb show ok';
+      gfb.innerHTML = '🎉 命中！妹妹 <b>8 岁</b>，小亮 <b>22 岁</b>，相差正好 14 岁。<br>你已经把答案试出来了 —— 接下来看看为什么会是这个数。';
+      yay();
+      slider.disabled = true;
+      var q3 = document.getElementById('q3');
+      if (q3) { q3.hidden = false; }
+      setTimeout(function(){ q3 && q3.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 260);
+      return;
+    }
+    if (solved3) return;
+
+    aimFill.classList.remove('hit');
+    g3box.classList.remove('hit');
+    if (d < 14){
+      gfb.className = 'fb show tip';
+      gfb.innerHTML = '相差 <b>' + d + ' 岁</b>，比 14 岁少 <b>' + (14 - d) + ' 岁</b> —— 让妹妹再大一点。';
+    } else {
+      gfb.className = 'fb show tip';
+      gfb.innerHTML = '相差 <b>' + d + ' 岁</b>，比 14 岁多 <b>' + (d - 14) + ' 岁</b> —— 妹妹有点太大了，往回调。';
+    }
+  }
+  slider.addEventListener('input', updateGame);
+  updateGame();
+
+  /* ---------- 第 4 关：分步线段图 ---------- */
+  var l4 = { step: 1, filled: false };
+  var l4next = document.getElementById('l4next');
+  var l4tag = document.getElementById('l4tag');
+  var gapSeg = document.getElementById('gapSeg');
+  var diffLine = document.getElementById('diffLine');
+  var diffCap = document.getElementById('diffCap');
+
+  function render4(){
+    document.querySelectorAll('[data-l4]').forEach(function(el){
+      el.classList.toggle('show', Number(el.dataset.l4) <= l4.step);
+    });
+    l4tag.textContent = Math.min(l4.step, 6) + ' / 6';
+    if (l4.step >= 6){
+      l4next.textContent = '去下一关 →';
+      l4next.dataset.done = '1';
+    } else {
+      l4next.textContent = '下一步';
+      delete l4next.dataset.done;
+    }
+    var canFill = (l4.step === 3 && !l4.filled);
+    gapSeg.classList.toggle('hot', canFill);
+    gapSeg.style.cursor = canFill ? 'pointer' : 'default';
+  }
+
+  function fillGap(){
+    if (l4.filled) return;
+    l4.filled = true;
+    gapSeg.classList.remove('hot');
+    gapSeg.classList.add('filled');
+    gapSeg.textContent = '2';
+    diffLine.style.left = '33.333%';
+    diffLine.style.width = '66.667%';
+    diffCap.textContent = '2 份 = 16 岁';
+    diffLine.classList.add('ok');
+    l4.step = 4;
+    render4();
+    yay();
+    setTimeout(function(){
+      l4.step = 5; render4();
+      setTimeout(function(){ l4.step = 6; render4(); if (cur === 4) yay(); }, 520);
+    }, 480);
+  }
+
+  gapSeg.addEventListener('click', function(){
+    if (l4.step === 3) fillGap();
+  });
+
+  l4next.addEventListener('click', function(){
+    if (l4next.dataset.done === '1'){ go(5); return; }
+    if (l4.step === 3 && !l4.filled){
+      // 直接按“下一步”也允许，替他补上
+      fillGap();
+      return;
+    }
+    l4.step = Math.min(6, l4.step + 1);
+    render4();
+    ping();
+  });
+  render4();
+
+  /* ---------- 第 5 关：填空 ---------- */
+  document.querySelectorAll('.blank').forEach(function(inp){
+    var ans = inp.dataset.ans;
+    var row = inp.closest('.fill-row');
+    var fi = inp.closest('.fi');
+    var mark = (fi || row).querySelector('.mark');
+    var hint = row.querySelector('.hint');
+
+    function check(){
+      var v = inp.value.replace(/[^0-9]/g, '');
+      inp.value = v;
+      if (v === ans){
+        if (!inp.classList.contains('ok')){
+          inp.classList.add('ok');
+          inp.readOnly = true;
+          mark.textContent = '✓';
+          mark.className = 'mark ok';
+          if (hint) hint.classList.remove('show');
+          ping();
+          checkAllDone();
+        }
+      } else if (v.length > 0 && v.length >= String(ans).length){
+        mark.textContent = '再想想';
+        mark.className = 'mark warn';
+        if (hint && !inp.classList.contains('ok')) hint.classList.add('show');
+      } else {
+        mark.textContent = '';
+        mark.className = 'mark';
+      }
+    }
+    inp.addEventListener('input', check);
+    inp.addEventListener('blur', check);
+  });
+
+  function checkAllDone(){
+    var all = Array.prototype.slice.call(document.querySelectorAll('.blank'));
+    if (all.length && all.every(function(i){ return i.classList.contains('ok'); })){
+      yay();
+      var c = document.querySelector('.screen[data-i="5"] .card');
+      if (c && !c.querySelector('.win-msg')){
+        var d = document.createElement('div');
+        d.className = 'fb show ok win-msg';
+        d.innerHTML = '全部正确！哥哥 <b>17 岁</b>，弟弟 <b>5 岁</b>。<br>验算：17 − 5 = 12 = 5 + 7 ✓；5 × 4 − 3 = 17 ✓';
+        c.appendChild(d);
+      }
+    }
+  }
+
+  document.getElementById('showAns5').addEventListener('click', function(){
+    document.querySelectorAll('.blank').forEach(function(inp){
+      inp.value = inp.dataset.ans;
+      inp.classList.add('ok');
+      inp.readOnly = true;
+      var row = inp.closest('.fill-row');
+      if (row){
+        var m = (inp.closest('.fi') || row).querySelector('.mark');
+        m.textContent = '✓'; m.className = 'mark ok';
+        var h = row.querySelector('.hint');
+        if (h) h.classList.remove('show');
+      }
+    });
+    checkAllDone();
+  });
+
+  /* ---------- 重玩 ---------- */
+  document.getElementById('restart').addEventListener('click', function(){
+    location.reload();
+  });
+
+  /* ---------- 托管平台徽章避让 ---------- */
+  function liftForBadge(){
+    var badge = document.querySelector('.button-container');
+    if (!badge) return;
+    var r = badge.getBoundingClientRect();
+    if (r.height > 0 && r.bottom > window.innerHeight - 70 && r.right > window.innerWidth - 220){
+      document.body.classList.add('has-badge');
+    }
+  }
+  setTimeout(liftForBadge, 500);
+  setTimeout(liftForBadge, 1600);
+
+  /* ---------- 初始化 ---------- */
+  go(0);
+})();
+</script>
+</body>
+</html>
