@@ -1,0 +1,3132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>时间侦探大冒险：破解小亮和妹妹的年龄谜题</title>
+  <style>
+    /* ==========================================================================
+       1. 设计令牌与全局基础样式（温暖明快的童趣绘本风）
+       ========================================================================== */
+    :root {
+      --bg-cream: #FFFDF5;
+      --bg-dot: #F4E9D2;
+      --card-bg: #FFFFFF;
+      --card-border: #F2E4C9;
+      --text-main: #2D3142;
+      --text-muted: #6B7280;
+
+      /* 角色与教具高对比度色板 */
+      --amber: #FF9F1C;
+      --amber-dark: #E07A00;
+      --yellow-block: #FFD166;
+      --yellow-border: #E5A93B;
+      --yellow-text: #7A4B00;
+
+      --blue-block: #5BC0EB;
+      --blue-border: #2B9AD4;
+      --blue-text: #0B4F75;
+
+      --magic-green: #2EC4B6;
+      --magic-green-light: #CCFBF1;
+      --magic-green-dark: #0F766E;
+
+      --coral: #FF6B6B;
+      --coral-light: #FFF0F0;
+      --coral-dark: #D64545;
+
+      --success: #2B9348;
+      --success-bg: #EBFBEE;
+      --success-border: #8CE99A;
+
+      --shadow-soft: 0 8px 24px rgba(180, 145, 90, 0.12);
+      --shadow-btn: 0 4px 0 rgba(0, 0, 0, 0.14);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Heiti SC", "Rounded Mplus 1c", sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg-cream);
+      background-image: radial-gradient(var(--bg-dot) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       2. 顶部导航栏与进度条
+       ========================================================================== */
+    .app-shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px 16px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #FFB703, #FB8500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(251, 133, 0, 0.3);
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: clamp(18px, 2.8vw, 23px);
+      font-weight: 800;
+      color: #4A3219;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      color: #8C6D46;
+      font-weight: 600;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .util-btn {
+      border: 2px solid #EBDCC2;
+      background: #FFFFFF;
+      color: #6B5335;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      font-family: inherit;
+    }
+
+    .util-btn:hover {
+      background: #FFF9EB;
+      border-color: var(--amber);
+      transform: translateY(-1px);
+    }
+
+    .util-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* 5关卡交替实例进度条 */
+    .progress-bar {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 20px;
+      padding: 10px 12px;
+      box-shadow: 0 4px 14px rgba(180, 145, 90, 0.08);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .level-pill {
+      border: 2px solid transparent;
+      background: #FAF5E8;
+      border-radius: 14px;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      position: relative;
+      text-align: center;
+    }
+
+    .level-pill.locked {
+      opacity: 0.52;
+      cursor: not-allowed;
+      background: #F3EFE6;
+    }
+
+    .level-pill.active {
+      background: linear-gradient(135deg, #FFF3D1, #FFE4A0);
+      border-color: var(--amber);
+      box-shadow: 0 4px 10px rgba(255, 159, 28, 0.22);
+      transform: translateY(-2px);
+    }
+
+    .level-pill.completed {
+      background: #EDFBF0;
+      border-color: #8CE99A;
+    }
+
+    .level-pill.completed.active {
+      background: linear-gradient(135deg, #FFF3D1, #FFE4A0);
+      border-color: var(--amber);
+    }
+
+    .pill-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+    }
+
+    .pill-tag.demo {
+      background: #E0F4FF;
+      color: #0B6FA4;
+    }
+
+    .pill-tag.practice {
+      background: #FFE8CC;
+      color: #B45309;
+    }
+
+    .pill-tag.boss {
+      background: #FFE3E3;
+      color: #C92A2A;
+    }
+
+    .pill-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .pill-status {
+      position: absolute;
+      top: -6px;
+      right: -4px;
+      font-size: 14px;
+    }
+
+    /* ==========================================================================
+       3. 主舞台卡片与通用组件
+       ========================================================================== */
+    .stage-card {
+      background: var(--card-bg);
+      border: 3px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px 26px;
+      box-shadow: var(--shadow-soft);
+      animation: fadeSlideIn 0.35s ease;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .level-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
+    .badge-demo { background: #E0F4FF; color: #0B6FA4; }
+    .badge-practice { background: #FFF0D4; color: #C25E00; }
+    .badge-boss { background: #FFE3E3; color: #C92A2A; }
+
+    .clue-box {
+      background: #FFFBF0;
+      border: 2px dashed #F3C77A;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      font-size: clamp(17px, 2.3vw, 20px);
+      font-weight: 700;
+      color: #3D2C1D;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .hl-blue {
+      color: #0B6FA4;
+      background: #E0F4FF;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hl-yellow {
+      color: #9A5B00;
+      background: #FFF0C2;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hl-coral {
+      color: #C92A2A;
+      background: #FFE3E3;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hl-green {
+      color: #0F766E;
+      background: #CCFBF1;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    /* 可爱大按钮系统 */
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 13px 22px;
+      font-size: 17px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.16);
+      user-select: none;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.03);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #FFB703 0%, #FB8500 100%);
+      color: #FFFFFF;
+      box-shadow: 0 5px 0 #CC6B00;
+    }
+
+    .btn-blue {
+      background: linear-gradient(180deg, #63C5F2 0%, #2B9AD4 100%);
+      color: #FFFFFF;
+      box-shadow: 0 5px 0 #1E75A3;
+    }
+
+    .btn-yellow {
+      background: linear-gradient(180deg, #FFD97D 0%, #F4B427 100%);
+      color: #5C3A00;
+      box-shadow: 0 5px 0 #C78D14;
+    }
+
+    .btn-magic {
+      background: linear-gradient(135deg, #2EC4B6 0%, #10B981 55%, #34D399 100%);
+      color: #FFFFFF;
+      box-shadow: 0 5px 0 #0D8A7B, 0 0 20px rgba(46, 196, 182, 0.45);
+      animation: magicPulse 1.8s infinite;
+    }
+
+    @keyframes magicPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 5px 0 #0D8A7B, 0 0 14px rgba(46, 196, 182, 0.4); }
+      50% { transform: scale(1.035); box-shadow: 0 5px 0 #0D8A7B, 0 0 26px rgba(46, 196, 182, 0.75); }
+    }
+
+    .btn-success {
+      background: linear-gradient(180deg, #40C057 0%, #2B9348 100%);
+      color: #FFFFFF;
+      box-shadow: 0 5px 0 #1E6B33;
+    }
+
+    .btn-ghost {
+      background: #FFF7E6;
+      color: #8A5A19;
+      border: 2px solid #F0D9B1;
+      box-shadow: none;
+      padding: 9px 16px;
+      font-size: 14px;
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: #FFEFCC;
+      transform: translateY(-1px);
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    /* ==========================================================================
+       4. 教具一：时间轴可视化舞台（第1、2、5关共用）
+       ========================================================================== */
+    .timeline-stage {
+      background: linear-gradient(180deg, #FAFDFF 0%, #FFFDF7 100%);
+      border: 2px solid #E2EEF5;
+      border-radius: 20px;
+      padding: 28px 26px 26px;
+      margin: 14px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .timeline-inner {
+      position: relative;
+      margin: 56px 38px 54px;
+      height: 18px;
+    }
+
+    /* 基础数轴轨道 */
+    .tl-rail {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 8px;
+      transform: translateY(-50%);
+      background: #E5E7EB;
+      border-radius: 999px;
+    }
+
+    /* 数轴刻度点 */
+    .tl-ticks {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .tl-tick {
+      width: 2px;
+      height: 12px;
+      background: #CBD5E1;
+      border-radius: 2px;
+    }
+
+    /* 行走轨迹色带 */
+    .tl-seg-younger {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      height: 12px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #FFD166, #FFA928);
+      border-radius: 999px 0 0 999px;
+      width: 0%;
+      transition: width 0.85s cubic-bezier(0.34, 1.35, 0.64, 1);
+      z-index: 2;
+    }
+
+    .tl-seg-older {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      height: 12px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg, #2B9AD4, #5BC0EB);
+      border-radius: 0 999px 999px 0;
+      width: 0%;
+      transition: width 0.85s cubic-bezier(0.34, 1.35, 0.64, 1);
+      z-index: 2;
+    }
+
+    .tl-seg-label {
+      position: absolute;
+      top: -29px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 999px;
+      opacity: 0;
+      transition: opacity 0.35s ease 0.35s, transform 0.35s ease 0.35s;
+      pointer-events: none;
+    }
+
+    .tl-seg-younger.walked .tl-seg-label,
+    .tl-seg-older.walked .tl-seg-label {
+      opacity: 1;
+    }
+
+    .tl-seg-younger .tl-seg-label {
+      background: #FFF0C2;
+      color: #8F5400;
+      border: 1.5px solid #F0B429;
+    }
+
+    .tl-seg-older .tl-seg-label {
+      background: #E0F4FF;
+      color: #0B5E8E;
+      border: 1.5px solid #4BB4E6;
+    }
+
+    /* 起点固定图钉（记住今年的位置） */
+    .tl-origin {
+      position: absolute;
+      top: 14px;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: #6B7280;
+      white-space: nowrap;
+    }
+
+    .tl-origin-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 0 0 2px currentColor;
+      margin-bottom: 4px;
+    }
+
+    .tl-origin.younger { left: 0%; color: #D98A00; }
+    .tl-origin.older { left: 100%; color: #1F8AC0; }
+
+    /* 可移动角色头像 */
+    .tl-avatar {
+      position: absolute;
+      top: -54px;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: left 0.85s cubic-bezier(0.34, 1.35, 0.64, 1), transform 0.45s ease;
+      z-index: 5;
+    }
+
+    .tl-avatar svg {
+      width: 50px;
+      height: 50px;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.14));
+    }
+
+    .tl-avatar.met-left {
+      transform: translateX(-92%);
+    }
+
+    .tl-avatar.met-right {
+      transform: translateX(-8%);
+    }
+
+    /* 中间相遇小红旗 */
+    .tl-flag {
+      position: absolute;
+      top: -64px;
+      transform: translateX(-50%) scale(0.4);
+      opacity: 0;
+      transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .tl-flag.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    .tl-flag-pill {
+      background: var(--coral);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(255, 107, 107, 0.4);
+    }
+
+    .tl-flag-pole {
+      width: 3px;
+      height: 44px;
+      background: var(--coral);
+      border-radius: 3px;
+    }
+
+    /* 底部总年龄差括弧 */
+    .tl-diff-brace {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 34px;
+      height: 16px;
+      border: 3px solid var(--coral);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      opacity: 0;
+      transform: scaleY(0.4);
+      transform-origin: top;
+      transition: all 0.45s ease;
+    }
+
+    .tl-diff-brace.show {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .tl-diff-badge {
+      position: absolute;
+      left: 50%;
+      bottom: -30px;
+      transform: translateX(-50%);
+      background: var(--coral);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(255, 107, 107, 0.35);
+    }
+
+    .pulse-hint {
+      animation: pulseGlow 0.9s ease 2;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 107, 107, 0)); }
+      50% { filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.9)); }
+    }
+
+    /* ==========================================================================
+       5. 教具二：线段图与“补齐魔法”舞台（第3、4、5关共用）
+       ========================================================================== */
+    .segment-stage {
+      background: linear-gradient(180deg, #FFFDF8 0%, #F9FCFF 100%);
+      border: 2px solid #E5DFD2;
+      border-radius: 20px;
+      padding: 22px 20px 52px;
+      margin: 14px 0;
+      position: relative;
+    }
+
+    .seg-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    .seg-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .seg-char {
+      width: 82px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .seg-char svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .seg-char-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .seg-track {
+      flex: 1;
+      position: relative;
+      height: 52px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 1份对齐虚线 */
+    .seg-align-line {
+      position: absolute;
+      left: 33.3333%;
+      top: -10px;
+      bottom: -36px;
+      width: 0;
+      border-left: 2.5px dashed #A3B1C6;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .seg-unit {
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .seg-unit-younger {
+      width: 33.3333%;
+      background: linear-gradient(180deg, #FFE08A 0%, #FFD166 100%);
+      border: 2.5px solid var(--yellow-border);
+      color: var(--yellow-text);
+      box-shadow: 0 3px 0 rgba(229, 169, 59, 0.35);
+      z-index: 2;
+    }
+
+    .seg-older-wrap {
+      width: 100%;
+      height: 48px;
+      display: flex;
+      align-items: stretch;
+      position: relative;
+      z-index: 2;
+    }
+
+    .seg-slot {
+      flex: 1;
+      display: flex;
+      padding-right: 4px;
+      position: relative;
+    }
+
+    .seg-slot:last-child {
+      padding-right: 0;
+    }
+
+    .seg-blue-full {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #7FD3F7 0%, #5BC0EB 100%);
+      border: 2.5px solid var(--blue-border);
+      border-radius: 12px;
+      color: var(--blue-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      box-shadow: 0 3px 0 rgba(43, 154, 212, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    /* 第3份拆分：真实蓝色部分(70%) + 缺口/魔法补块(30%) */
+    .seg-blue-partial {
+      width: 70%;
+      height: 100%;
+      background: linear-gradient(180deg, #7FD3F7 0%, #5BC0EB 100%);
+      border: 2.5px solid var(--blue-border);
+      border-right: none;
+      border-radius: 12px 0 0 12px;
+      color: var(--blue-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 3px 0 rgba(43, 154, 212, 0.3);
+      transition: all 0.4s ease;
+    }
+
+    .seg-notch {
+      width: 30%;
+      height: 100%;
+      border: 2.5px dashed var(--coral);
+      background: rgba(255, 107, 107, 0.1);
+      border-radius: 0 12px 12px 0;
+      color: var(--coral-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.1;
+      transition: all 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: visible;
+    }
+
+    /* 施展补齐魔法后的状态 */
+    .seg-notch.patched {
+      border: 2.5px solid var(--magic-green-dark);
+      background: linear-gradient(180deg, #5EEAD4 0%, #2EC4B6 100%);
+      color: #064E3B;
+      box-shadow: 0 0 18px rgba(46, 196, 182, 0.65), 0 3px 0 rgba(15, 118, 110, 0.35);
+      transform: scale(1.03);
+    }
+
+    .sparkle-burst {
+      position: absolute;
+      top: -18px;
+      right: -12px;
+      font-size: 22px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .seg-notch.patched .sparkle-burst {
+      animation: sparklePop 0.9s ease forwards;
+    }
+
+    @keyframes sparklePop {
+      0% { opacity: 0; transform: scale(0.3) rotate(-20deg); }
+      45% { opacity: 1; transform: scale(1.35) rotate(12deg); }
+      100% { opacity: 0; transform: scale(1.6) translateY(-14px) rotate(25deg); }
+    }
+
+    /* 聚光灯：高亮多出来的 2 份 */
+    .seg-dimmed {
+      opacity: 0.42;
+      filter: grayscale(0.25);
+    }
+
+    .seg-spotlight {
+      position: absolute;
+      left: 33.3333%;
+      width: 66.6667%;
+      top: -8px;
+      bottom: -8px;
+      border: 3px solid #FF9F1C;
+      background: rgba(255, 183, 3, 0.12);
+      border-radius: 16px;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.45s ease;
+      z-index: 4;
+    }
+
+    .seg-spotlight.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .seg-spotlight-tag {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #FF9F1C;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 2px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 3px 8px rgba(255, 159, 28, 0.35);
+    }
+
+    /* 线段图底部年龄差括弧（精准对齐 33.3333% -> 90% 或 100%） */
+    .seg-bracket-area {
+      position: relative;
+      height: 16px;
+      margin-left: 96px; /* 82px char + 14px gap */
+      margin-top: -10px;
+    }
+
+    .seg-diff-bracket {
+      position: absolute;
+      left: 33.3333%;
+      width: 56.6667%; /* 90% - 33.3333% */
+      height: 16px;
+      border: 3px solid var(--coral);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s ease;
+    }
+
+    .seg-diff-bracket.patched {
+      width: 66.6667%; /* 100% - 33.3333% */
+      border-color: var(--magic-green-dark);
+    }
+
+    .seg-diff-pill {
+      position: absolute;
+      left: 50%;
+      bottom: -32px;
+      transform: translateX(-50%);
+      background: var(--coral);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: background 0.4s ease, transform 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+    }
+
+    .seg-diff-bracket.patched .seg-diff-pill {
+      background: var(--magic-green-dark);
+      animation: bouncePop 0.55s ease;
+    }
+
+    @keyframes bouncePop {
+      0% { transform: translateX(-50%) scale(0.85); }
+      50% { transform: translateX(-50%) scale(1.14); }
+      100% { transform: translateX(-50%) scale(1); }
+    }
+
+    /* 份数平分结果浮标 */
+    .share-pill {
+      display: inline-block;
+      background: #FFFFFF;
+      color: #D9480F;
+      border: 2px solid #FF922B;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 14px;
+      font-weight: 900;
+      animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.4); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ==========================================================================
+       6. 解释卡片、交互反馈、填空、选择卡与小键盘
+       ========================================================================== */
+    .coach-bubble {
+      background: #F4F9FF;
+      border: 2px solid #CDE4FA;
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1E3A5F;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1.6;
+    }
+
+    .coach-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .formula-banner {
+      background: linear-gradient(135deg, #FFF7E0, #FFEEC2);
+      border: 2px solid #F7C96B;
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      text-align: center;
+      animation: fadeSlideIn 0.35s ease;
+    }
+
+    .formula-big {
+      font-size: clamp(20px, 3vw, 26px);
+      font-weight: 900;
+      color: #B44100;
+      letter-spacing: 0.5px;
+    }
+
+    .golden-rule {
+      margin-top: 8px;
+      display: inline-block;
+      background: #FFFFFF;
+      color: #7A4B00;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 999px;
+      border: 1.5px solid #F3C77A;
+    }
+
+    /* 选择题大卡片 */
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .choice-card {
+      background: #FFFFFF;
+      border: 3px solid #EBDCC2;
+      border-radius: 18px;
+      padding: 16px 10px;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow: 0 4px 0 #E5D4B7;
+      font-family: inherit;
+    }
+
+    .choice-card:hover:not(:disabled) {
+      border-color: var(--amber);
+      background: #FFFBF0;
+      transform: translateY(-2px);
+    }
+
+    .choice-card.correct {
+      background: var(--success-bg);
+      border-color: var(--success);
+      color: var(--success);
+      box-shadow: 0 4px 0 #8CE99A;
+    }
+
+    .choice-card.wrong {
+      background: var(--coral-light);
+      border-color: var(--coral);
+      color: var(--coral-dark);
+      animation: gentleShake 0.4s ease;
+    }
+
+    @keyframes gentleShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    /* 反馈横幅 */
+    .feedback-box {
+      border-radius: 16px;
+      padding: 13px 16px;
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: fadeSlideIn 0.28s ease;
+    }
+
+    .feedback-box.show { display: flex; }
+    .feedback-box.ok {
+      background: var(--success-bg);
+      border: 2px solid var(--success-border);
+      color: #1D6830;
+    }
+    .feedback-box.hint {
+      background: #FFF4E6;
+      border: 2px solid #FFC078;
+      color: #A64B00;
+    }
+
+    /* 验算机三盏绿灯 */
+    .verify-panel {
+      background: #F8FAFC;
+      border: 2px solid #DCE5F0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .verify-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #FFFFFF;
+      border: 2px solid #E9EEF5;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.35s ease;
+    }
+
+    .verify-item.lit {
+      background: #EBFBEE;
+      border-color: #69DB7C;
+      color: #1B6B2E;
+      transform: scale(1.01);
+    }
+
+    .verify-lamp {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #E2E8F0;
+      border: 2px solid #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+      transition: all 0.35s ease;
+    }
+
+    .verify-item.lit .verify-lamp {
+      background: #40C057;
+      border-color: #2B9348;
+      color: #FFFFFF;
+      box-shadow: 0 0 12px rgba(64, 192, 87, 0.65);
+    }
+
+    /* 填空步骤卡与触摸友好数字输入 */
+    .step-task-card {
+      background: #FFFDF7;
+      border: 2px solid #EFE3CA;
+      border-radius: 18px;
+      padding: 16px 18px;
+      margin-top: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .step-task-card.done {
+      background: #F4FDF6;
+      border-color: #9CE6AA;
+    }
+
+    .step-task-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .step-num-badge {
+      background: #FFE8B6;
+      color: #8A4F00;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 4px 11px;
+      border-radius: 999px;
+    }
+
+    .fill-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .num-input {
+      width: 84px;
+      height: 48px;
+      border: 3px solid #D9C8AA;
+      border-radius: 14px;
+      background: #FFFFFF;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #D95B00;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .num-input:focus, .num-input.active-target {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 4px rgba(255, 159, 28, 0.22);
+    }
+
+    .num-input.ok {
+      border-color: var(--success);
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    /* 教室白板/平板友好：紧凑点击数字条 */
+    .mini-keypad {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: #FFF8EA;
+      border: 2px solid #F0DFBE;
+      border-radius: 16px;
+      padding: 8px 10px;
+      margin-top: 14px;
+    }
+
+    .keypad-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #9A7440;
+      margin-right: 4px;
+    }
+
+    .key-btn {
+      min-width: 40px;
+      height: 40px;
+      border: 2px solid #E8D5B5;
+      background: #FFFFFF;
+      border-radius: 11px;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-main);
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 2px 0 #E2CEAC;
+      transition: transform 0.1s;
+    }
+
+    .key-btn:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    .key-btn.del {
+      background: #FFF0F0;
+      border-color: #F8B4B4;
+      color: var(--coral-dark);
+      padding: 0 10px;
+    }
+
+    /* 第3关顶部步骤点 */
+    .substep-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .substep-dot {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: #F1ECE0;
+      color: #8A7E6B;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .substep-dot.active {
+      background: var(--amber);
+      color: #FFFFFF;
+    }
+
+    .substep-dot.done {
+      background: #D3F9D8;
+      color: #2B8A3E;
+    }
+
+    /* 第5关可折叠草稿纸 */
+    .scratchpad-drawer {
+      margin-top: 16px;
+      border: 2px dashed #94B8D7;
+      border-radius: 18px;
+      background: #F6FBFF;
+      overflow: hidden;
+    }
+
+    .scratchpad-body {
+      padding: 16px;
+      display: none;
+      animation: fadeSlideIn 0.3s ease;
+    }
+
+    .scratchpad-body.open {
+      display: block;
+    }
+
+    .tab-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: 2px solid #CBE0F5;
+      background: #FFFFFF;
+      color: #2B6CB0;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: #2B9AD4;
+      border-color: #2B9AD4;
+      color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       7. 弹窗（教学原理说明 & 通关庆祝与满分秘籍卡）
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(36, 28, 18, 0.56);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border: 3px solid #F2E1BE;
+      border-radius: 26px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px 26px;
+      position: relative;
+      z-index: 1002;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.45, 0.64, 1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: #F4EFE6;
+      color: #6B5B45;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: #FFE8CC;
+      color: #B45309;
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1001;
+    }
+
+    /* 原题满分秘籍卡 */
+    .cheat-card {
+      background: linear-gradient(180deg, #FFFBF0 0%, #FFF5D6 100%);
+      border: 2.5px solid #F5B841;
+      border-radius: 20px;
+      padding: 16px 18px;
+      text-align: left;
+      margin: 16px 0;
+    }
+
+    .cheat-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #9C4A00;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cheat-step {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #3B2E1E;
+      line-height: 1.55;
+    }
+
+    .pedagogy-section {
+      background: #FFFDF7;
+      border: 1.5px solid #EFE4CD;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .pedagogy-section h4 {
+      margin: 0 0 6px;
+      color: #B45309;
+      font-size: 15px;
+    }
+
+    /* ==========================================================================
+       8. 响应式适配（手机、平板、教室希沃白板）
+       ========================================================================== */
+    @media (max-width: 720px) {
+      .app-shell { padding: 10px 10px 28px; }
+      .stage-card { padding: 16px 14px 20px; }
+      .progress-bar { gap: 5px; padding: 8px 6px; }
+      .pill-name { font-size: 11px; }
+      .pill-tag { font-size: 10px; padding: 1px 5px; }
+      .choice-grid { grid-template-columns: repeat(2, 1fr); }
+      .timeline-stage { padding: 20px 12px 24px; }
+      .timeline-inner { margin: 54px 26px 52px; }
+      .seg-char { width: 62px; }
+      .seg-char svg { width: 40px; height: 40px; }
+      .seg-bracket-area { margin-left: 76px; }
+      .seg-unit, .seg-blue-full { font-size: 13px; }
+      .seg-blue-partial { font-size: 12px; }
+      .seg-notch { font-size: 11px; }
+      .btn { font-size: 15px; padding: 11px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- 顶部标题栏与工具按钮 -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true">🕵️</div>
+        <div>
+          <h1 class="brand-title">时间侦探大冒险</h1>
+          <div class="brand-sub">破解小亮和妹妹的年龄谜题 · 三年级数学闯关</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="util-btn" id="btn-pedagogy" type="button">👩‍🏫 教学原理说明</button>
+        <button class="util-btn" id="btn-mute" type="button">🔊 音效开</button>
+      </div>
+    </header>
+
+    <!-- 5关卡交替实例进度条 -->
+    <nav class="progress-bar" id="progress-bar" aria-label="关卡进度"></nav>
+
+    <!-- 主游戏内容舞台 -->
+    <main class="stage-card" id="stage-container"></main>
+  </div>
+
+  <!-- 教学原理说明弹窗（家长/教师专用，不影响孩子游玩） -->
+  <div class="modal-backdrop" id="pedagogy-modal" role="dialog" aria-modal="true" aria-labelledby="ped-title">
+    <div class="modal-card">
+      <button class="modal-close" id="close-pedagogy" type="button" aria-label="关闭">×</button>
+      <h2 id="ped-title" style="margin:0 0 14px; font-size:20px; color:#4A3219;">👩‍🏫 教学设计原理说明</h2>
+
+      <div class="pedagogy-section">
+        <h4>1. 严守三年级具象思维：全程零方程（不用 x、y）</h4>
+        三年级学生处于具体运算阶段，本游戏通过<strong>时间数轴</strong>理解“年龄差”，通过<strong>彩色线段图与补齐魔法</strong>理解“差倍问题”，让抽象数量关系看得见、摸得着。
+      </div>
+
+      <div class="pedagogy-section">
+        <h4>2. 认知负荷理论（Cognitive Load Theory）落地</h4>
+        • <strong>分段降负荷（Segmenting）</strong>：将复合两步应用题拆为微技能①（找年龄差）和微技能②（差倍补齐法），单关聚焦单一目标，避免工作记忆过载。<br>
+        • <strong>双通道编码与空间邻近（Dual Coding &amp; Spatial Contiguity）</strong>：简短文字提示紧贴时间轴与线段图对应位置，减少视线来回跳转。<br>
+        • <strong>支架渐退（Scaffolding &amp; Fading）</strong>：从全动画分步示范（第1、3关）→ 半引导填空与温和提示（第2、4关）→ 独立迁移并按需展开草稿纸（第5关）。
+      </div>
+
+      <div class="pedagogy-section">
+        <h4>3. 交替实例原则（Alternating Worked Examples &amp; Practice）</h4>
+        采用<strong>“示范A → 小练A → 示范B → 小练B → 终极迁移”</strong>配对节奏：学完一个微技能样例后立即进行同结构微练习，比“一次性讲完再刷题”更利于图式建构与长时记忆迁移。
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1.5px dashed #EBDCC2;">
+        <label style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:#6B5335; cursor:pointer;">
+          <input type="checkbox" id="toggle-teacher-mode" style="width:18px; height:18px; accent-color:#FF9F1C;">
+          🔓 教师演示模式（自由点击切换任意关卡）
+        </label>
+        <button class="btn btn-primary" id="ok-pedagogy" type="button" style="padding:9px 20px; font-size:15px;">我知道啦</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通关庆祝与原题满分秘籍卡弹窗 -->
+  <div class="modal-backdrop" id="victory-modal" role="dialog" aria-modal="true">
+    <canvas id="confetti-canvas"></canvas>
+    <div class="modal-card" style="text-align:center;">
+      <div style="margin-bottom:6px;">
+        <!-- 荣誉勋章 SVG -->
+        <svg width="92" height="92" viewBox="0 0 100 100" aria-hidden="true">
+          <path d="M32 62 L24 94 L42 84 L50 96 L58 84 L76 94 L68 62 Z" fill="#FF6B6B"/>
+          <circle cx="50" cy="44" r="34" fill="#FFD166" stroke="#E07A00" stroke-width="4"/>
+          <circle cx="50" cy="44" r="26" fill="#FFF3B0" stroke="#F4A261" stroke-width="2" stroke-dasharray="4 3"/>
+          <path d="M50 24 L56 37 L70 39 L60 48 L62 62 L50 55 L38 62 L40 48 L30 39 L44 37 Z" fill="#FB8500"/>
+        </svg>
+      </div>
+      <div style="display:inline-block; background:#FFE8B6; color:#9C4A00; font-weight:900; font-size:14px; padding:4px 14px; border-radius:999px; margin-bottom:6px;">
+        🎉 全部 5 关完美通关！
+      </div>
+      <h2 style="margin:4px 0 8px; font-size:26px; color:#B44100;">🏆 超级时间侦探</h2>
+      <p style="margin:0; font-size:15px; font-weight:700; color:#5C4B37;">
+        太厉害啦！你已经独立破解了“乐乐19岁、天天7岁”的终极谜题！
+      </p>
+
+      <!-- 原题满分秘籍卡 -->
+      <div class="cheat-card">
+        <div class="cheat-title">📜 原题满分秘籍卡（小亮 &amp; 妹妹）</div>
+        <div class="cheat-step">
+          <strong>原题回顾：</strong>小亮今年比妹妹的 3 倍小 2 岁，小亮 8 年前的年龄与妹妹 6 年后的年龄相等。两人今年各几岁？
+        </div>
+        <div class="cheat-step">
+          <strong>第一步【时间轴找年龄差】：</strong><br>
+          小亮往回走 8 岁，妹妹往前走 6 岁相遇 → 年龄差 = <strong style="color:#C92A2A;">8 + 6 = 14（岁）</strong>（永远不变！）
+        </div>
+        <div class="cheat-step" style="margin-bottom:0;">
+          <strong>第二步【线段图补齐魔法】：</strong><br>
+          ① 给小亮补 2 岁变整 3 份，新年龄差 = <strong style="color:#0F766E;">14 + 2 = 16（岁）</strong><br>
+          ② 多出 3 - 1 = 2 份 → 妹妹（1份）= <strong style="color:#B45309;">16 ÷ 2 = 8（岁）</strong><br>
+          ③ 小亮 = <strong style="color:#0B6FA4;">8 + 14 = 22（岁）</strong>（验算：8×3-2 = 22 ✓）
+        </div>
+      </div>
+
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn btn-primary" id="btn-replay-all" type="button">🔄 再玩一遍</button>
+        <button class="btn btn-ghost" id="btn-review-any" type="button" style="padding:12px 18px; font-size:15px;">📚 自由回看任意关卡</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       模块 1：Web Audio API 零依赖合成音效引擎
+       ========================================================================== */
+    const SoundFX = (function () {
+      let ctx = null;
+      let muted = false;
+
+      function getCtx() {
+        if (muted) return null;
+        if (!ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return null;
+          ctx = new AudioCtx();
+        }
+        if (ctx.state === 'suspended') {
+          ctx.resume().catch(() => {});
+        }
+        return ctx;
+      }
+
+      function tone(freq, startOffset, duration, type = 'sine', gainVal = 0.14) {
+        const c = getCtx();
+        if (!c) return;
+        try {
+          const osc = c.createOscillator();
+          const gain = c.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, c.currentTime + startOffset);
+          gain.gain.setValueAtTime(0.001, c.currentTime + startOffset);
+          gain.gain.exponentialRampToValueAtTime(gainVal, c.currentTime + startOffset + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + startOffset + duration);
+          osc.connect(gain);
+          gain.connect(c.destination);
+          osc.start(c.currentTime + startOffset);
+          osc.stop(c.currentTime + startOffset + duration + 0.02);
+        } catch (e) {}
+      }
+
+      return {
+        toggleMute() {
+          muted = !muted;
+          return muted;
+        },
+        isMuted() { return muted; },
+        click() {
+          tone(520, 0, 0.09, 'triangle', 0.12);
+        },
+        step() {
+          tone(440, 0, 0.11, 'sine', 0.12);
+          tone(587.33, 0.08, 0.14, 'sine', 0.12);
+        },
+        meet() {
+          tone(523.25, 0, 0.12, 'triangle', 0.14);
+          tone(659.25, 0.09, 0.12, 'triangle', 0.14);
+          tone(783.99, 0.18, 0.22, 'triangle', 0.16);
+        },
+        magic() {
+          // 闪亮魔法琶音
+          const notes = [523.25, 659.25, 783.99, 987.77, 1046.5, 1318.5];
+          notes.forEach((n, idx) => tone(n, idx * 0.055, 0.24, 'sine', 0.11));
+        },
+        correct() {
+          tone(587.33, 0, 0.12, 'triangle', 0.15);
+          tone(739.99, 0.09, 0.12, 'triangle', 0.15);
+          tone(880, 0.18, 0.26, 'triangle', 0.16);
+        },
+        gentleTry() {
+          // 温和无惩罚提示音
+          tone(330, 0, 0.15, 'sine', 0.11);
+          tone(293.66, 0.12, 0.18, 'sine', 0.10);
+        },
+        lamp() {
+          tone(880, 0, 0.16, 'sine', 0.13);
+        },
+        victory() {
+          const melody = [
+            [523.25, 0, 0.14],
+            [659.25, 0.13, 0.14],
+            [783.99, 0.26, 0.14],
+            [1046.5, 0.40, 0.35],
+            [783.99, 0.58, 0.14],
+            [1046.5, 0.72, 0.45]
+          ];
+          melody.forEach(([f, t, d]) => tone(f, t, d, 'triangle', 0.15));
+        }
+      };
+    })();
+
+    /* ==========================================================================
+       模块 2：可爱绘本风内联 SVG 角色头像库
+       ========================================================================== */
+    function getAvatarSVG(id) {
+      const map = {
+        xiaoliang: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="34" r="24" fill="#FFE0BD" stroke="#4A3219" stroke-width="2.5"/>
+          <path d="M10 28 C12 10, 52 10, 54 28 Z" fill="#2B9AD4" stroke="#1E6091" stroke-width="2.5"/>
+          <rect x="8" y="25" width="48" height="6" rx="3" fill="#5BC0EB" stroke="#1E6091" stroke-width="2"/>
+          <circle cx="24" cy="37" r="3" fill="#2D3142"/>
+          <circle cx="40" cy="37" r="3" fill="#2D3142"/>
+          <circle cx="19" cy="43" r="3.5" fill="#FF9E9E" opacity="0.6"/>
+          <circle cx="45" cy="43" r="3.5" fill="#FF9E9E" opacity="0.6"/>
+          <path d="M26 45 Q32 51 38 45" fill="none" stroke="#4A3219" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+        meimei: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="13" cy="24" r="9" fill="#5C3A21" stroke="#3D2412" stroke-width="2"/>
+          <circle cx="51" cy="24" r="9" fill="#5C3A21" stroke="#3D2412" stroke-width="2"/>
+          <circle cx="15" cy="20" r="3.5" fill="#FF6B6B"/>
+          <circle cx="49" cy="20" r="3.5" fill="#FF6B6B"/>
+          <circle cx="32" cy="35" r="22" fill="#FFE5C4" stroke="#4A3219" stroke-width="2.5"/>
+          <path d="M12 31 C16 14, 48 14, 52 31 C44 25, 20 25, 12 31 Z" fill="#5C3A21"/>
+          <circle cx="24" cy="37" r="3" fill="#2D3142"/>
+          <circle cx="40" cy="37" r="3" fill="#2D3142"/>
+          <circle cx="18" cy="42" r="3.5" fill="#FF9E9E" opacity="0.7"/>
+          <circle cx="46" cy="42" r="3.5" fill="#FF9E9E" opacity="0.7"/>
+          <path d="M27 45 Q32 50 37 45" fill="none" stroke="#4A3219" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>`,
+        bear: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="15" cy="18" r="10" fill="#A97142" stroke="#5C3A21" stroke-width="2.5"/>
+          <circle cx="49" cy="18" r="10" fill="#A97142" stroke="#5C3A21" stroke-width="2.5"/>
+          <circle cx="15" cy="18" r="5" fill="#E6B88A"/>
+          <circle cx="49" cy="18" r="5" fill="#E6B88A"/>
+          <circle cx="32" cy="36" r="23" fill="#A97142" stroke="#5C3A21" stroke-width="2.5"/>
+          <ellipse cx="32" cy="43" rx="11" ry="9" fill="#F2D3B1"/>
+          <circle cx="23" cy="33" r="3" fill="#2D3142"/>
+          <circle cx="41" cy="33" r="3" fill="#2D3142"/>
+          <ellipse cx="32" cy="40" rx="4.5" ry="3" fill="#4A3219"/>
+          <path d="M28 46 Q32 50 36 46" fill="none" stroke="#4A3219" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>`,
+        rabbit: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <ellipse cx="22" cy="16" rx="6" ry="14" fill="#FFFFFF" stroke="#B8A99A" stroke-width="2.5"/>
+          <ellipse cx="42" cy="16" rx="6" ry="14" fill="#FFFFFF" stroke="#B8A99A" stroke-width="2.5"/>
+          <ellipse cx="22" cy="17" rx="3" ry="9" fill="#FFB3C1"/>
+          <ellipse cx="42" cy="17" rx="3" ry="9" fill="#FFB3C1"/>
+          <circle cx="32" cy="40" r="20" fill="#FFFFFF" stroke="#B8A99A" stroke-width="2.5"/>
+          <circle cx="24" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="40" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="18" cy="43" r="3.5" fill="#FFB3C1" opacity="0.7"/>
+          <circle cx="46" cy="43" r="3.5" fill="#FFB3C1" opacity="0.7"/>
+          <path d="M29 43 L32 46 L35 43" fill="none" stroke="#FF6B6B" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>`,
+        xiaomei: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="35" r="24" fill="#4A3219"/>
+          <circle cx="32" cy="36" r="20" fill="#FFE5C4" stroke="#4A3219" stroke-width="2.5"/>
+          <path d="M12 31 Q32 18 52 31 Q46 15 32 15 Q18 15 12 31 Z" fill="#4A3219"/>
+          <polygon points="46,16 48,21 53,21 49,24 51,29 46,26 41,29 43,24 39,21 44,21" fill="#FFD166" stroke="#E07A00" stroke-width="1.2"/>
+          <circle cx="24" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="40" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="19" cy="43" r="3" fill="#FF9E9E" opacity="0.7"/>
+          <circle cx="45" cy="43" r="3" fill="#FF9E9E" opacity="0.7"/>
+          <path d="M27 46 Q32 51 37 46" fill="none" stroke="#4A3219" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>`,
+        didi: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="36" r="22" fill="#FFE5C4" stroke="#4A3219" stroke-width="2.5"/>
+          <path d="M14 26 Q32 10 50 26 Q38 20 26 24 Z" fill="#3D2412"/>
+          <path d="M31 15 Q35 6 41 12" fill="none" stroke="#3D2412" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="40" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="18" cy="43" r="3" fill="#FF9E9E" opacity="0.65"/>
+          <circle cx="46" cy="43" r="3" fill="#FF9E9E" opacity="0.65"/>
+          <path d="M27 46 Q32 50 37 46" fill="none" stroke="#4A3219" stroke-width="2.3" stroke-linecap="round"/>
+        </svg>`,
+        lele: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="35" r="22" fill="#FFE0BD" stroke="#4A3219" stroke-width="2.5"/>
+          <path d="M11 28 C15 11, 49 11, 53 28 C44 21, 20 21, 11 28 Z" fill="#2D3142"/>
+          <circle cx="23" cy="37" r="6" fill="none" stroke="#2B9AD4" stroke-width="2.4"/>
+          <circle cx="41" cy="37" r="6" fill="none" stroke="#2B9AD4" stroke-width="2.4"/>
+          <line x1="29" y1="37" x2="35" y2="37" stroke="#2B9AD4" stroke-width="2.4"/>
+          <circle cx="23" cy="37" r="2.5" fill="#2D3142"/>
+          <circle cx="41" cy="37" r="2.5" fill="#2D3142"/>
+          <path d="M26 47 Q32 52 38 47" fill="none" stroke="#4A3219" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>`,
+        tiantian: `<svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="36" r="22" fill="#FFE5C4" stroke="#4A3219" stroke-width="2.5"/>
+          <path d="M12 27 C16 12, 48 12, 52 27 Z" fill="#FFB703" stroke="#C77D00" stroke-width="2"/>
+          <circle cx="24" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="40" cy="38" r="3" fill="#2D3142"/>
+          <circle cx="18" cy="43" r="3.5" fill="#FF9E9E" opacity="0.65"/>
+          <circle cx="46" cy="43" r="3.5" fill="#FF9E9E" opacity="0.65"/>
+          <path d="M27 46 Q32 51 37 46" fill="none" stroke="#4A3219" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>`
+      };
+      return map[id] || map.xiaoliang;
+    }
+
+    /* ==========================================================================
+       模块 3：全局状态与 5 关元数据（交替实例配对结构）
+       ========================================================================== */
+    const LEVELS = [
+      { id: 1, tag: '示范A', tagClass: 'demo', name: '找年龄差' },
+      { id: 2, tag: '小练A', tagClass: 'practice', name: '立刻试一试' },
+      { id: 3, tag: '示范B', tagClass: 'demo', name: '补齐魔法' },
+      { id: 4, tag: '小练B', tagClass: 'practice', name: '动手施魔法' },
+      { id: 5, tag: '终极关', tagClass: 'boss', name: '独立破案' }
+    ];
+
+    const AppState = {
+      currentLevel: 1,
+      maxUnlocked: 1,
+      completed: new Set(),
+      teacherMode: false,
+      activeInputId: null
+    };
+
+    function markLevelComplete(levelId) {
+      AppState.completed.add(levelId);
+      if (levelId + 1 > AppState.maxUnlocked && levelId < 5) {
+        AppState.maxUnlocked = levelId + 1;
+      }
+      if (levelId === 5) {
+        AppState.maxUnlocked = 5;
+      }
+      renderProgressBar();
+    }
+
+    function goToLevel(levelId) {
+      if (!AppState.teacherMode && levelId > AppState.maxUnlocked) return;
+      SoundFX.click();
+      AppState.currentLevel = levelId;
+      AppState.activeInputId = null;
+      renderProgressBar();
+      renderCurrentLevel();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ==========================================================================
+       模块 4：顶部进度条渲染
+       ========================================================================== */
+    function renderProgressBar() {
+      const bar = document.getElementById('progress-bar');
+      bar.innerHTML = LEVELS.map(lv => {
+        const isUnlocked = AppState.teacherMode || lv.id <= AppState.maxUnlocked;
+        const isCompleted = AppState.completed.has(lv.id);
+        const isActive = AppState.currentLevel === lv.id;
+        const cls = [
+          'level-pill',
+          !isUnlocked ? 'locked' : '',
+          isCompleted ? 'completed' : '',
+          isActive ? 'active' : ''
+        ].filter(Boolean).join(' ');
+
+        const statusIcon = isCompleted ? '⭐' : (!isUnlocked ? '🔒' : '');
+
+        return `
+          <button class="${cls}" type="button" data-lv="${lv.id}" ${!isUnlocked ? 'disabled' : ''}>
+            ${statusIcon ? `<span class="pill-status">${statusIcon}</span>` : ''}
+            <span class="pill-tag ${lv.tagClass}">第${lv.id}关·${lv.tag}</span>
+            <span class="pill-name">${lv.name}</span>
+          </button>
+        `;
+      }).join('');
+
+      bar.querySelectorAll('.level-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.getAttribute('data-lv'));
+          goToLevel(id);
+        });
+      });
+    }
+
+    /* ==========================================================================
+       模块 5：通用组件 —— 时间轴生成器 & 迷你数字键盘
+       ========================================================================== */
+    function buildTimelineHTML(cfg) {
+      const total = cfg.youngerWalk + cfg.olderWalk;
+      const meetPct = ((cfg.youngerWalk / total) * 100).toFixed(2);
+      const ticks = Array.from({ length: total + 1 }, () => '<span class="tl-tick"></span>').join('');
+      return `
+        <div class="timeline-stage" id="${cfg.id}">
+          <div class="timeline-inner">
+            <div class="tl-rail"></div>
+            <div class="tl-ticks">${ticks}</div>
+
+            <!-- 行走轨迹条 -->
+            <div class="tl-seg-younger" data-target="${meetPct}">
+              <span class="tl-seg-label">往前走 ${cfg.youngerWalk} 岁 →</span>
+            </div>
+            <div class="tl-seg-older" data-target="${(100 - meetPct).toFixed(2)}">
+              <span class="tl-seg-label">← 往回走 ${cfg.olderWalk} 岁</span>
+            </div>
+
+            <!-- 起点标注（记住今年位置） -->
+            <div class="tl-origin younger">
+              <span class="tl-origin-dot"></span>
+              <span>${cfg.youngerName}今年</span>
+            </div>
+            <div class="tl-origin older">
+              <span class="tl-origin-dot"></span>
+              <span>${cfg.olderName}今年</span>
+            </div>
+
+            <!-- 可移动角色 -->
+            <div class="tl-avatar" data-role="younger" style="left:0%;">
+              ${getAvatarSVG(cfg.youngerAvatar)}
+            </div>
+            <div class="tl-avatar" data-role="older" style="left:100%;">
+              ${getAvatarSVG(cfg.olderAvatar)}
+            </div>
+
+            <!-- 相遇红旗 -->
+            <div class="tl-flag" style="left:${meetPct}%;">
+              <span class="tl-flag-pill">🚩 相遇：年龄相等！</span>
+              <span class="tl-flag-pole"></span>
+            </div>
+
+            <!-- 总年龄差括弧 -->
+            <div class="tl-diff-brace">
+              <span class="tl-diff-badge">${cfg.diffLabel || `年龄差 = ${cfg.olderWalk} + ${cfg.youngerWalk} = ${total} 岁`}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function createMiniKeypadHTML(hintText = '平板/白板点选数字：') {
+      const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+      return `
+        <div class="mini-keypad" id="mini-keypad">
+          <span class="keypad-label">🔢 ${hintText}</span>
+          ${nums.map(n => `<button type="button" class="key-btn" data-key="${n}">${n}</button>`).join('')}
+          <button type="button" class="key-btn del" data-key="del">⌫ 退格</button>
+        </div>
+      `;
+    }
+
+    function bindMiniKeypad(defaultInputId) {
+      AppState.activeInputId = defaultInputId;
+      const inputs = document.querySelectorAll('.num-input');
+      inputs.forEach(inp => {
+        inp.addEventListener('focus', () => {
+          inputs.forEach(i => i.classList.remove('active-target'));
+          inp.classList.add('active-target');
+          AppState.activeInputId = inp.id;
+        });
+        inp.addEventListener('input', () => {
+          // 只允许纯数字，最多3位
+          inp.value = inp.value.replace(/[^\d]/g, '').slice(0, 3);
+        });
+      });
+
+      const keypad = document.getElementById('mini-keypad');
+      if (!keypad) return;
+      keypad.querySelectorAll('.key-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          SoundFX.click();
+          let target = document.getElementById(AppState.activeInputId);
+          if (!target || target.disabled) {
+            target = Array.from(document.querySelectorAll('.num-input')).find(i => !i.disabled);
+          }
+          if (!target || target.disabled) return;
+          inputs.forEach(i => i.classList.remove('active-target'));
+          target.classList.add('active-target');
+          AppState.activeInputId = target.id;
+
+          const key = btn.getAttribute('data-key');
+          if (key === 'del') {
+            target.value = target.value.slice(0, -1);
+          } else if (target.value.length < 3) {
+            target.value += key;
+          }
+          target.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+      });
+    }
+
+    /* ==========================================================================
+       模块 6：第 1 关【示范样例 A】时间轴找年龄差（原题拆解第一步）
+       ========================================================================== */
+    function renderLevel1() {
+      const stage = document.getElementById('stage-container');
+      let walkedOlder = false;
+      let walkedYounger = false;
+
+      stage.innerHTML = `
+        <div class="level-header">
+          <div>
+            <span class="level-badge badge-demo">🔍 第1关 · 示范样例 A（微技能①：找年龄差）</span>
+            <h2 style="margin:0; font-size:22px;">时间轴大发现：小亮比妹妹大几岁？</h2>
+          </div>
+          <button class="btn btn-ghost" id="l1-replay" type="button">🔄 再演示一遍</button>
+        </div>
+
+        <div class="clue-box">
+          📜 原题线索①：小亮 <span class="hl-blue">8 年前</span> 的年龄，与妹妹 <span class="hl-yellow">6 年后</span> 的年龄 <span class="hl-coral">相等</span>。
+        </div>
+
+        ${buildTimelineHTML({
+          id: 'tl-l1',
+          youngerName: '妹妹',
+          youngerAvatar: 'meimei',
+          youngerWalk: 6,
+          olderName: '小亮',
+          olderAvatar: 'xiaoliang',
+          olderWalk: 8,
+          diffLabel: '年龄差 = 8 + 6 = 14 岁'
+        })}
+
+        <div class="btn-row" id="l1-walk-btns">
+          <button class="btn btn-blue" id="btn-walk-older" type="button">⬅️ 让小亮往回走 8 岁</button>
+          <button class="btn btn-yellow" id="btn-walk-younger" type="button">➡️ 让妹妹往前走 6 岁</button>
+        </div>
+
+        <div class="coach-bubble" id="l1-coach">
+          <span class="coach-icon">🕵️</span>
+          <span>点击上面两个大按钮，看看小亮和妹妹在时间轴上怎么相遇！</span>
+        </div>
+
+        <div class="formula-banner" id="l1-result" style="display:none;">
+          <div class="formula-big">年龄差 = 8 + 6 = 14（岁）</div>
+          <div class="golden-rule">💡 侦探秘籍：不管过几年，两人的年龄差永远不变！</div>
+          <div class="btn-row" style="margin-top:14px;">
+            <button class="btn btn-primary" id="l1-next" type="button">我明白了，马上试一试！ 👉</button>
+          </div>
+        </div>
+      `;
+
+      const tl = document.getElementById('tl-l1');
+      const segOlder = tl.querySelector('.tl-seg-older');
+      const segYounger = tl.querySelector('.tl-seg-younger');
+      const avOlder = tl.querySelector('[data-role="older"]');
+      const avYounger = tl.querySelector('[data-role="younger"]');
+      const flag = tl.querySelector('.tl-flag');
+      const brace = tl.querySelector('.tl-diff-brace');
+      const meetPct = segYounger.getAttribute('data-target');
+
+      function checkBothMet() {
+        const coach = document.getElementById('l1-coach');
+        if (walkedOlder && walkedYounger) {
+          SoundFX.meet();
+          avYounger.classList.add('met-left');
+          avOlder.classList.add('met-right');
+          setTimeout(() => {
+            flag.classList.add('show');
+            brace.classList.add('show');
+            coach.innerHTML = `<span class="coach-icon">🎉</span><span>看！妹妹往前走 <strong>6 岁</strong>，小亮往回走 <strong>8 岁</strong>，刚好在红旗处相遇！两段路合起来，就是他们今年的年龄差！</span>`;
+            document.getElementById('l1-result').style.display = 'block';
+            markLevelComplete(1);
+          }, 420);
+        } else if (walkedOlder) {
+          coach.innerHTML = `<span class="coach-icon">👏</span><span>好棒！小亮已经往回走了 8 岁，快再点击黄色按钮，让妹妹往前走 6 岁吧！</span>`;
+        } else if (walkedYounger) {
+          coach.innerHTML = `<span class="coach-icon">👏</span><span>好棒！妹妹已经往前走了 6 岁，快再点击蓝色按钮，让小亮往回走 8 岁吧！</span>`;
+        }
+      }
+
+      document.getElementById('btn-walk-older').addEventListener('click', function () {
+        if (walkedOlder) return;
+        walkedOlder = true;
+        SoundFX.step();
+        this.disabled = true;
+        this.textContent = '✅ 小亮已往回走 8 岁';
+        segOlder.style.width = segOlder.getAttribute('data-target') + '%';
+        segOlder.classList.add('walked');
+        avOlder.style.left = meetPct + '%';
+        checkBothMet();
+      });
+
+      document.getElementById('btn-walk-younger').addEventListener('click', function () {
+        if (walkedYounger) return;
+        walkedYounger = true;
+        SoundFX.step();
+        this.disabled = true;
+        this.textContent = '✅ 妹妹已往前走 6 岁';
+        segYounger.style.width = meetPct + '%';
+        segYounger.classList.add('walked');
+        avYounger.style.left = meetPct + '%';
+        checkBothMet();
+      });
+
+      document.getElementById('l1-replay').addEventListener('click', () => {
+        SoundFX.click();
+        renderLevel1();
+      });
+
+      document.getElementById('l1-next').addEventListener('click', () => goToLevel(2));
+    }
+
+    /* ==========================================================================
+       模块 7：第 2 关【交替小练 A】立刻模仿找年龄差（巩固微技能①）
+       ========================================================================== */
+    function renderLevel2() {
+      const stage = document.getElementById('stage-container');
+      let solved = false;
+      let animPlayed = false;
+
+      stage.innerHTML = `
+        <div class="level-header">
+          <div>
+            <span class="level-badge badge-practice">⚡ 第2关 · 交替小练 A（趁热打铁）</span>
+            <h2 style="margin:0; font-size:22px;">轮到你啦！大熊比小兔大几岁？</h2>
+          </div>
+          <button class="btn btn-ghost" id="l2-anim-btn" type="button">▶️ 播放时间轴动画</button>
+        </div>
+
+        <div class="clue-box">
+          🐻 练习题：大熊 <span class="hl-blue">5 年前</span> 的年龄，和小兔 <span class="hl-yellow">4 年后</span> 的年龄 <span class="hl-coral">相等</span>。大熊比小兔大几岁？
+        </div>
+
+        ${buildTimelineHTML({
+          id: 'tl-l2',
+          youngerName: '小兔',
+          youngerAvatar: 'rabbit',
+          youngerWalk: 4,
+          olderName: '大熊',
+          olderAvatar: 'bear',
+          olderWalk: 5,
+          diffLabel: '年龄差 = ？岁'
+        })}
+
+        <div style="text-align:center; font-size:18px; font-weight:800; margin-top:6px; color:#4A3219;">
+          👇 请点选正确答案：
+        </div>
+
+        <div class="choice-grid" id="l2-choices">
+          <button class="choice-card" type="button" data-val="1">1 岁</button>
+          <button class="choice-card" type="button" data-val="8">8 岁</button>
+          <button class="choice-card" type="button" data-val="9">9 岁</button>
+          <button class="choice-card" type="button" data-val="10">10 岁</button>
+        </div>
+
+        <div class="feedback-box" id="l2-feedback"></div>
+
+        <div class="btn-row" id="l2-next-wrap" style="display:none;">
+          <button class="btn btn-success" id="l2-next" type="button">太棒了！去第3关学“补齐魔法” 👉</button>
+        </div>
+      `;
+
+      const tl = document.getElementById('tl-l2');
+      const segOlder = tl.querySelector('.tl-seg-older');
+      const segYounger = tl.querySelector('.tl-seg-younger');
+      const avOlder = tl.querySelector('[data-role="older"]');
+      const avYounger = tl.querySelector('[data-role="younger"]');
+      const flag = tl.querySelector('.tl-flag');
+      const brace = tl.querySelector('.tl-diff-brace');
+      const diffBadge = tl.querySelector('.tl-diff-badge');
+      const meetPct = segYounger.getAttribute('data-target');
+
+      function playWalkAnim(revealAnswer = false) {
+        animPlayed = true;
+        segOlder.style.width = segOlder.getAttribute('data-target') + '%';
+        segOlder.classList.add('walked');
+        segYounger.style.width = meetPct + '%';
+        segYounger.classList.add('walked');
+        avOlder.style.left = meetPct + '%';
+        avYounger.style.left = meetPct + '%';
+        avYounger.classList.add('met-left');
+        avOlder.classList.add('met-right');
+        setTimeout(() => {
+          flag.classList.add('show');
+          brace.classList.add('show');
+          if (revealAnswer) {
+            diffBadge.textContent = '年龄差 = 5 + 4 = 9 岁';
+          }
+        }, 420);
+      }
+
+      // 页面进入后自动轻柔演示相遇动画，帮助视觉编码
+      setTimeout(() => playWalkAnim(false), 320);
+
+      document.getElementById('l2-anim-btn').addEventListener('click', () => {
+        SoundFX.step();
+        segOlder.style.width = '0%';
+        segYounger.style.width = '0%';
+        segOlder.classList.remove('walked');
+        segYounger.classList.remove('walked');
+        avOlder.style.left = '100%';
+        avYounger.style.left = '0%';
+        avOlder.classList.remove('met-right');
+        avYounger.classList.remove('met-left');
+        flag.classList.remove('show');
+        brace.classList.remove('show');
+        setTimeout(() => playWalkAnim(solved), 120);
+      });
+
+      const fb = document.getElementById('l2-feedback');
+      document.querySelectorAll('#l2-choices .choice-card').forEach(card => {
+        card.addEventListener('click', () => {
+          if (solved) return;
+          const val = Number(card.getAttribute('data-val'));
+          if (val === 9) {
+            solved = true;
+            SoundFX.correct();
+            card.classList.add('correct');
+            document.querySelectorAll('#l2-choices .choice-card').forEach(c => {
+              if (c !== card) c.disabled = true;
+            });
+            diffBadge.textContent = '年龄差 = 5 + 4 = 9 岁 ✓';
+            fb.className = 'feedback-box show ok';
+            fb.innerHTML = `<span style="font-size:24px;">🎊</span><span>完全正确！大熊往回走 <strong>5 岁</strong> + 小兔往前走 <strong>4 岁</strong> = <strong>9 岁</strong>！你已经牢牢掌握【找年龄差】啦！</span>`;
+            document.getElementById('l2-next-wrap').style.display = 'flex';
+            markLevelComplete(2);
+          } else {
+            SoundFX.gentleTry();
+            card.classList.add('wrong');
+            setTimeout(() => card.classList.remove('wrong'), 500);
+            // 高亮两段路，给出零挫败的温和引导
+            segYounger.classList.add('pulse-hint');
+            segOlder.classList.add('pulse-hint');
+            setTimeout(() => {
+              segYounger.classList.remove('pulse-hint');
+              segOlder.classList.remove('pulse-hint');
+            }, 1800);
+
+            fb.className = 'feedback-box show hint';
+            if (val === 1) {
+              fb.innerHTML = `<span style="font-size:22px;">💡</span><span>差一点点哦！看上面的时间轴：小兔往前走了 <strong>4 岁</strong>，大熊往回走了 <strong>5 岁</strong> 才相遇，两段路要<strong>合起来（相加）</strong>，不能相减哟，再试一次！</span>`;
+            } else {
+              fb.innerHTML = `<span style="font-size:22px;">💡</span><span>很接近啦！看看彩色的两段路：黄色这段是 <strong>4 岁</strong>，蓝色这段是 <strong>5 岁</strong>，把它们加在一起（4 + 5）试试看！</span>`;
+            }
+          }
+        });
+      });
+
+      document.getElementById('l2-next').addEventListener('click', () => goToLevel(3));
+    }
+
+    /* ==========================================================================
+       模块 8：第 3 关【示范样例 B】线段图“补齐魔法”（原题拆解第二步）
+       ========================================================================== */
+    function renderLevel3() {
+      const stage = document.getElementById('stage-container');
+      let step = 1; // 1:画线段 2:施魔法 3:求1份 4:算小亮与验算
+      let patched = false;
+      let verified = false;
+
+      stage.innerHTML = `
+        <div class="level-header">
+          <div>
+            <span class="level-badge badge-demo">✨ 第3关 · 示范样例 B（微技能②：补齐魔法）</span>
+            <h2 style="margin:0; font-size:22px;">用线段图破解：妹妹和小亮今年各几岁？</h2>
+          </div>
+          <div class="substep-dots" id="l3-dots">
+            <button type="button" class="substep-dot active" data-s="1">1.画图</button>
+            <button type="button" class="substep-dot" data-s="2">2.补齐魔法</button>
+            <button type="button" class="substep-dot" data-s="3">3.算妹妹</button>
+            <button type="button" class="substep-dot" data-s="4">4.算小亮</button>
+          </div>
+        </div>
+
+        <div class="clue-box" style="font-size:16px; padding:12px 16px;">
+          ✅ 线索①（已破解）：两人相差 <span class="hl-coral">14 岁</span> &nbsp;|&nbsp;
+          📜 线索②：小亮今年比妹妹的 <span class="hl-blue">3 倍</span> <span class="hl-coral">小 2 岁</span>。
+        </div>
+
+        <!-- 线段图教具舞台 -->
+        <div class="segment-stage" id="seg-l3">
+          <div class="seg-grid">
+            <!-- 妹妹行 -->
+            <div class="seg-row">
+              <div class="seg-char">
+                ${getAvatarSVG('meimei')}
+                <span class="seg-char-name">妹妹</span>
+              </div>
+              <div class="seg-track">
+                <div class="seg-align-line"></div>
+                <div class="seg-unit seg-unit-younger" id="l3-younger-bar">1 份</div>
+              </div>
+            </div>
+
+            <!-- 小亮行 -->
+            <div class="seg-row">
+              <div class="seg-char">
+                ${getAvatarSVG('xiaoliang')}
+                <span class="seg-char-name">小亮</span>
+              </div>
+              <div class="seg-track">
+                <div class="seg-spotlight" id="l3-spotlight">
+                  <span class="seg-spotlight-tag">多出的 2 份 = 16 岁</span>
+                </div>
+                <div class="seg-older-wrap">
+                  <div class="seg-slot">
+                    <div class="seg-blue-full" id="l3-b1">1 份</div>
+                  </div>
+                  <div class="seg-slot">
+                    <div class="seg-blue-full" id="l3-b2">1 份</div>
+                  </div>
+                  <div class="seg-slot">
+                    <div class="seg-blue-partial" id="l3-b3-part">1 份</div>
+                    <div class="seg-notch" id="l3-notch">
+                      少2岁
+                      <span class="sparkle-burst">✨</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 年龄差括弧 -->
+          <div class="seg-bracket-area">
+            <div class="seg-diff-bracket" id="l3-bracket">
+              <span class="seg-diff-pill" id="l3-diff-pill">相差 14 岁</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分步讲解与交互控制区 -->
+        <div id="l3-panel"></div>
+      `;
+
+      function updateVisuals() {
+        const youngerBar = document.getElementById('l3-younger-bar');
+        const b1 = document.getElementById('l3-b1');
+        const b2 = document.getElementById('l3-b2');
+        const b3Part = document.getElementById('l3-b3-part');
+        const notch = document.getElementById('l3-notch');
+        const bracket = document.getElementById('l3-bracket');
+        const diffPill = document.getElementById('l3-diff-pill');
+        const spotlight = document.getElementById('l3-spotlight');
+        const panel = document.getElementById('l3-panel');
+
+        // 更新顶部小步骤点
+        document.querySelectorAll('#l3-dots .substep-dot').forEach(dot => {
+          const s = Number(dot.getAttribute('data-s'));
+          dot.classList.toggle('active', s === step);
+          dot.classList.toggle('done', s < step);
+        });
+
+        // 重置状态
+        youngerBar.classList.remove('seg-dimmed');
+        b1.classList.remove('seg-dimmed');
+        spotlight.classList.remove('show');
+        youngerBar.innerHTML = '1 份';
+        b1.innerHTML = '1 份';
+        b2.innerHTML = '1 份';
+        b3Part.innerHTML = '1 份';
+
+        if (patched || step >= 3) {
+          notch.classList.add('patched');
+          notch.innerHTML = '+2岁<span class="sparkle-burst">✨</span>';
+          bracket.classList.add('patched');
+          diffPill.textContent = '14 + 2 = 16 岁';
+        } else {
+          notch.classList.remove('patched');
+          notch.innerHTML = '少2岁<span class="sparkle-burst">✨</span>';
+          bracket.classList.remove('patched');
+          diffPill.textContent = '相差 14 岁';
+        }
+
+        if (step === 1) {
+          panel.innerHTML = `
+            <div class="coach-bubble">
+              <span class="coach-icon">📏</span>
+              <span><strong>第1步（画线段）：</strong>把妹妹画成 <strong>1 份</strong>；小亮画 <strong>3 份</strong>，但第 3 份缺了一小角（<strong style="color:#C92A2A;">少 2 岁</strong>）。下面括弧表示两人相差 <strong>14 岁</strong>。</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-primary" id="l3-to-2" type="button">缺了一角不好算，怎么办？下一步 👉</button>
+            </div>
+          `;
+          document.getElementById('l3-to-2').addEventListener('click', () => {
+            SoundFX.click();
+            step = 2;
+            updateVisuals();
+          });
+        } else if (step === 2) {
+          if (!patched) {
+            panel.innerHTML = `
+              <div class="coach-bubble">
+                <span class="coach-icon">🪄</span>
+                <span><strong>第2步（补齐魔法）：</strong>缺了 2 岁没关系！快点击闪亮的魔法按钮，给小亮<strong>补上 2 岁</strong>，让他变成整整齐齐的 3 份！</span>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-magic" id="l3-cast-magic" type="button">✨ 施展补齐魔法（+2 岁）</button>
+              </div>
+            `;
+            document.getElementById('l3-cast-magic').addEventListener('click', () => {
+              SoundFX.magic();
+              patched = true;
+              updateVisuals();
+            });
+          } else {
+            panel.innerHTML = `
+              <div class="coach-bubble" style="background:#ECFDF5; border-color:#6EE7B7; color:#065F46;">
+                <span class="coach-icon">🌟</span>
+                <span><strong>魔法成功！</strong>缺口填满啦，小亮整整齐齐变成 <strong>3 份</strong>！因为小亮长大了 2 岁，两人的年龄差也跟着变长 2 岁：<strong>14 + 2 = 16（岁）</strong>！</span>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-primary" id="l3-to-3" type="button">下一步：看差求 1 份（算妹妹） 👉</button>
+              </div>
+            `;
+            document.getElementById('l3-to-3').addEventListener('click', () => {
+              SoundFX.step();
+              step = 3;
+              updateVisuals();
+            });
+          }
+        } else if (step === 3) {
+          // 对齐前1份，高亮多出的2份，并把16岁平分成两个8岁
+          b1.classList.add('seg-dimmed');
+          spotlight.classList.add('show');
+          b2.innerHTML = '<span class="share-pill">8 岁</span>';
+          b3Part.innerHTML = '<span class="share-pill">8 岁</span>';
+          youngerBar.innerHTML = '1 份 = <span class="share-pill" style="margin-left:4px;">8 岁</span>';
+
+          panel.innerHTML = `
+            <div class="coach-bubble">
+              <span class="coach-icon">🎯</span>
+              <span><strong>第3步（看差求 1 份）：</strong>小亮比妹妹多出 <strong>3 - 1 = 2 份</strong>，正好对应 <strong>16 岁</strong>！把 16 岁平均分给这 2 份：</span>
+            </div>
+            <div class="formula-banner">
+              <div class="formula-big">妹妹（1 份）= 16 ÷ 2 = 8（岁）</div>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-primary" id="l3-to-4" type="button">下一步：算小亮并验算 👉</button>
+            </div>
+          `;
+          document.getElementById('l3-to-4').addEventListener('click', () => {
+            SoundFX.step();
+            step = 4;
+            updateVisuals();
+          });
+        } else if (step === 4) {
+          youngerBar.innerHTML = '妹妹 <span class="share-pill" style="margin-left:4px;">8 岁</span>';
+          b1.innerHTML = '8 岁';
+          b2.innerHTML = '8 岁';
+          b3Part.innerHTML = '6 岁';
+          notch.classList.remove('patched');
+          notch.innerHTML = '还2岁';
+          bracket.classList.remove('patched');
+          diffPill.textContent = '原年龄差 14 岁';
+
+          panel.innerHTML = `
+            <div class="formula-banner" style="margin-top:0;">
+              <div class="formula-big">妹妹今年 8 岁，小亮今年 = 8 + 14 = 22（岁）</div>
+              <div class="golden-rule">✨ 也可以把借来的魔法 2 岁还回去：8 × 3 - 2 = 22（岁）</div>
+            </div>
+
+            <div class="verify-panel" id="l3-verify-box">
+              <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                <strong style="font-size:15px; color:#334155;">🔍 侦探验算机（点右边按钮检验答案对不对）：</strong>
+                <button class="btn btn-blue" id="btn-run-verify" type="button" style="padding:8px 16px; font-size:14px;">🔍 启动验算机</button>
+              </div>
+              <div class="verify-item ${verified ? 'lit' : ''}" id="v-1">
+                <span>① 小亮 8 年前：22 - 8 = <strong>14 岁</strong></span>
+                <span class="verify-lamp">${verified ? '✓' : ''}</span>
+              </div>
+              <div class="verify-item ${verified ? 'lit' : ''}" id="v-2">
+                <span>② 妹妹 6 年后：8 + 6 = <strong>14 岁</strong>（两者相等！）</span>
+                <span class="verify-lamp">${verified ? '✓' : ''}</span>
+              </div>
+              <div class="verify-item ${verified ? 'lit' : ''}" id="v-3">
+                <span>③ 妹妹 3 倍小 2 岁：8 × 3 - 2 = <strong>22 岁</strong>（刚好是小亮！）</span>
+                <span class="verify-lamp">${verified ? '✓' : ''}</span>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-success" id="l3-next" type="button">太神奇了！我去第4关动手施魔法 👉</button>
+            </div>
+          `;
+
+          markLevelComplete(3);
+
+          const btnVerify = document.getElementById('btn-run-verify');
+          if (verified) {
+            btnVerify.textContent = '✅ 三盏绿灯全亮！';
+            btnVerify.disabled = true;
+          }
+          btnVerify.addEventListener('click', () => {
+            btnVerify.disabled = true;
+            btnVerify.textContent = '验算中...';
+            [1, 2, 3].forEach((idx, i) => {
+              setTimeout(() => {
+                SoundFX.lamp();
+                const el = document.getElementById('v-' + idx);
+                el.classList.add('lit');
+                el.querySelector('.verify-lamp').textContent = '✓';
+                if (idx === 3) {
+                  verified = true;
+                  btnVerify.textContent = '✅ 三盏绿灯全亮！';
+                  setTimeout(() => SoundFX.correct(), 160);
+                }
+              }, i * 380);
+            });
+          });
+
+          document.getElementById('l3-next').addEventListener('click', () => goToLevel(4));
+        }
+      }
+
+      document.querySelectorAll('#l3-dots .substep-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          SoundFX.click();
+          const target = Number(dot.getAttribute('data-s'));
+          step = target;
+          if (target >= 3) patched = true;
+          updateVisuals();
+        });
+      });
+
+      updateVisuals();
+    }
+
+    /* ==========================================================================
+       模块 9：第 4 关【交替小练 B】半引导练习“补齐魔法”（支架渐退）
+       ========================================================================== */
+    function renderLevel4() {
+      const stage = document.getElementById('stage-container');
+      let magicDone = false;
+      let step2Done = false;
+      let step3Done = false;
+
+      stage.innerHTML = `
+        <div class="level-header">
+          <div>
+            <span class="level-badge badge-practice">🪄 第4关 · 交替小练 B（半引导动手做）</span>
+            <h2 style="margin:0; font-size:22px;">帮小美施展补齐魔法！</h2>
+          </div>
+          <button class="btn btn-ghost" id="l4-reset" type="button">🔄 重新做一遍</button>
+        </div>
+
+        <div class="clue-box">
+          👧 练习题：小美比弟弟大 <span class="hl-coral">12 岁</span>，小美今年的年龄比弟弟的 <span class="hl-blue">3 倍</span> <span class="hl-coral">小 4 岁</span>。弟弟和小美今年各几岁？
+        </div>
+
+        <!-- 线段图 -->
+        <div class="segment-stage">
+          <div class="seg-grid">
+            <div class="seg-row">
+              <div class="seg-char">
+                ${getAvatarSVG('didi')}
+                <span class="seg-char-name">弟弟</span>
+              </div>
+              <div class="seg-track">
+                <div class="seg-align-line"></div>
+                <div class="seg-unit seg-unit-younger" id="l4-younger-bar">1 份</div>
+              </div>
+            </div>
+
+            <div class="seg-row">
+              <div class="seg-char">
+                ${getAvatarSVG('xiaomei')}
+                <span class="seg-char-name">小美</span>
+              </div>
+              <div class="seg-track">
+                <div class="seg-spotlight" id="l4-spotlight">
+                  <span class="seg-spotlight-tag">多出的 2 份 = 16 岁</span>
+                </div>
+                <div class="seg-older-wrap">
+                  <div class="seg-slot"><div class="seg-blue-full" id="l4-b1">1 份</div></div>
+                  <div class="seg-slot"><div class="seg-blue-full" id="l4-b2">1 份</div></div>
+                  <div class="seg-slot">
+                    <div class="seg-blue-partial" id="l4-b3">1 份</div>
+                    <div class="seg-notch" id="l4-notch">少4岁<span class="sparkle-burst">✨</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="seg-bracket-area">
+            <div class="seg-diff-bracket" id="l4-bracket">
+              <span class="seg-diff-pill" id="l4-diff-pill">相差 12 岁</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 任务 1：点击施展补齐魔法 -->
+        <div class="step-task-card" id="l4-card-1">
+          <div class="step-task-header">
+            <span class="step-num-badge">第一步：先补成整 3 份</span>
+            <button class="btn btn-ghost" type="button" id="l4-hint-1" style="padding:5px 12px; font-size:13px;">💡 看个小提示</button>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <span style="font-size:16px; font-weight:700;">小美第 3 份缺了 4 岁，快点魔法按钮把它补齐！</span>
+            <button class="btn btn-magic" id="l4-btn-magic" type="button">✨ 给小美补上 4 岁</button>
+          </div>
+          <div class="feedback-box" id="l4-fb-1"></div>
+        </div>
+
+        <!-- 任务 2：算补齐后的新年龄差 -->
+        <div class="step-task-card" id="l4-card-2" style="display:none;">
+          <div class="step-task-header">
+            <span class="step-num-badge">第二步：算补齐后的年龄差</span>
+            <button class="btn btn-ghost" type="button" id="l4-hint-2" style="padding:5px 12px; font-size:13px;">💡 看个小提示</button>
+          </div>
+          <div class="fill-line">
+            <span>补齐后，年龄差变成了：12 + 4 =</span>
+            <input class="num-input" id="l4-in-diff" type="text" inputmode="numeric" placeholder="?" autocomplete="off">
+            <span>岁</span>
+            <button class="btn btn-primary" id="l4-check-2" type="button" style="padding:10px 18px; font-size:15px;">检查 ✓</button>
+          </div>
+          <div class="feedback-box" id="l4-fb-2"></div>
+        </div>
+
+        <!-- 任务 3：求弟弟和小美 -->
+        <div class="step-task-card" id="l4-card-3" style="display:none;">
+          <div class="step-task-header">
+            <span class="step-num-badge">第三步：算弟弟和小美今年各几岁</span>
+            <button class="btn btn-ghost" type="button" id="l4-hint-3" style="padding:5px 12px; font-size:13px;">💡 看个小提示</button>
+          </div>
+          <div style="font-size:15px; font-weight:700; color:#5C4B37; margin-bottom:10px;">
+            小美多出来的 <strong>3 - 1 = 2 份</strong> 一共是 <strong>16 岁</strong>，那么：
+          </div>
+          <div class="fill-line" style="margin-bottom:12px;">
+            <span>弟弟（1份）=</span>
+            <input class="num-input" id="l4-in-didi" type="text" inputmode="numeric" placeholder="?" autocomplete="off">
+            <span>岁，&nbsp;&nbsp;小美今年 =</span>
+            <input class="num-input" id="l4-in-xiaomei" type="text" inputmode="numeric" placeholder="?" autocomplete="off">
+            <span>岁</span>
+            <button class="btn btn-success" id="l4-check-3" type="button" style="padding:10px 18px; font-size:15px;">提交答案 ✓</button>
+          </div>
+          <div class="feedback-box" id="l4-fb-3"></div>
+        </div>
+
+        <div id="l4-keypad-wrap" style="display:none;">
+          ${createMiniKeypadHTML('也可直接点选数字：')}
+        </div>
+
+        <div class="btn-row" id="l4-next-wrap" style="display:none;">
+          <button class="btn btn-primary" id="l4-next" type="button">太厉害了！挑战第5关：终极独立破案 🏆</button>
+        </div>
+      `;
+
+      const notch = document.getElementById('l4-notch');
+      const bracket = document.getElementById('l4-bracket');
+      const diffPill = document.getElementById('l4-diff-pill');
+      const spotlight = document.getElementById('l4-spotlight');
+
+      // 小提示按钮
+      document.getElementById('l4-hint-1').addEventListener('click', () => {
+        SoundFX.click();
+        const fb = document.getElementById('l4-fb-1');
+        fb.className = 'feedback-box show hint';
+        fb.innerHTML = `<span>💡</span><span>直接点击右边绿色的【✨ 给小美补上 4 岁】按钮，观察线段图的变化哦！</span>`;
+      });
+
+      document.getElementById('l4-hint-2').addEventListener('click', () => {
+        SoundFX.click();
+        const fb = document.getElementById('l4-fb-2');
+        fb.className = 'feedback-box show hint';
+        fb.innerHTML = `<span>💡</span><span>原来相差 12 岁，给小美补上了 4 岁，差距也变大了 4 岁，算一算 12 + 4 等于几吧！</span>`;
+      });
+
+      document.getElementById('l4-hint-3').addEventListener('click', () => {
+        SoundFX.click();
+        const fb = document.getElementById('l4-fb-3');
+        fb.className = 'feedback-box show hint';
+        fb.innerHTML = `<span>💡</span><span>① 2 份一共 16 岁，所以 1 份（弟弟）= 16 ÷ 2 = 8 岁；<br>② 小美比弟弟大 12 岁，所以小美 = 弟弟 + 12（注意别把借来的 4 岁算进去哦）！</span>`;
+      });
+
+      // 任务 1：点击施展补齐魔法
+      document.getElementById('l4-btn-magic').addEventListener('click', function () {
+        if (magicDone) return;
+        magicDone = true;
+        SoundFX.magic();
+        notch.classList.add('patched');
+        notch.innerHTML = '+4岁<span class="sparkle-burst">✨</span>';
+        bracket.classList.add('patched');
+        diffPill.textContent = '12 + 4 = ? 岁';
+
+        this.disabled = true;
+        this.textContent = '✅ 已补上 4 岁';
+        document.getElementById('l4-card-1').classList.add('done');
+        const fb1 = document.getElementById('l4-fb-1');
+        fb1.className = 'feedback-box show ok';
+        fb1.innerHTML = `<span>🌟</span><span>漂亮！小美变成整整齐齐的 3 份啦！快完成第二步吧~</span>`;
+
+        document.getElementById('l4-card-2').style.display = 'block';
+        document.getElementById('l4-keypad-wrap').style.display = 'block';
+        bindMiniKeypad('l4-in-diff');
+        document.getElementById('l4-in-diff').focus();
+      });
+
+      // 任务 2：检查新年龄差 16
+      document.getElementById('l4-check-2').addEventListener('click', () => {
+        if (step2Done) return;
+        const inp = document.getElementById('l4-in-diff');
+        const fb = document.getElementById('l4-fb-2');
+        const val = Number(inp.value.trim());
+
+        if (val === 16) {
+          step2Done = true;
+          SoundFX.correct();
+          inp.classList.add('ok');
+          inp.disabled = true;
+          document.getElementById('l4-check-2').disabled = true;
+          document.getElementById('l4-card-2').classList.add('done');
+          diffPill.textContent = '12 + 4 = 16 岁';
+          document.getElementById('l4-b1').classList.add('seg-dimmed');
+          spotlight.classList.add('show');
+
+          fb.className = 'feedback-box show ok';
+          fb.innerHTML = `<span>🎉</span><span>答对啦！补齐后年龄差是 <strong>16 岁</strong>，正好对应小美多出来的 2 份！</span>`;
+
+          document.getElementById('l4-card-3').style.display = 'block';
+          AppState.activeInputId = 'l4-in-didi';
+          document.getElementById('l4-in-didi').focus();
+        } else {
+          SoundFX.gentleTry();
+          fb.className = 'feedback-box show hint';
+          fb.innerHTML = `<span>💡</span><span>再算算看哦！原来的年龄差是 12 岁，小美补上了 4 岁，12 + 4 等于多少呢？</span>`;
+        }
+      });
+
+      // 任务 3：检查弟弟(8)和小美(20)
+      document.getElementById('l4-check-3').addEventListener('click', () => {
+        if (step3Done) return;
+        const inDidi = document.getElementById('l4-in-didi');
+        const inMeimei = document.getElementById('l4-in-xiaomei');
+        const fb = document.getElementById('l4-fb-3');
+        const vDidi = Number(inDidi.value.trim());
+        const vMeimei = Number(inMeimei.value.trim());
+
+        if (vDidi === 8 && vMeimei === 20) {
+          step3Done = true;
+          SoundFX.correct();
+          inDidi.classList.add('ok');
+          inMeimei.classList.add('ok');
+          inDidi.disabled = true;
+          inMeimei.disabled = true;
+          document.getElementById('l4-check-3').disabled = true;
+          document.getElementById('l4-card-3').classList.add('done');
+          document.getElementById('l4-younger-bar').innerHTML = '弟弟 <span class="share-pill" style="margin-left:4px;">8岁</span>';
+          document.getElementById('l4-b2').innerHTML = '<span class="share-pill">8岁</span>';
+          document.getElementById('l4-b3').innerHTML = '<span class="share-pill">8岁</span>';
+
+          fb.className = 'feedback-box show ok';
+          fb.innerHTML = `<span>🎊</span><span>满分破案！弟弟 <strong>8 岁</strong>（16 ÷ 2），小美 <strong>20 岁</strong>（8 + 12，验算：8 × 3 - 4 = 20 ✓）！</span>`;
+          document.getElementById('l4-next-wrap').style.display = 'flex';
+          markLevelComplete(4);
+        } else {
+          SoundFX.gentleTry();
+          fb.className = 'feedback-box show hint';
+          if (vDidi !== 8) {
+            fb.innerHTML = `<span>💡</span><span>先看弟弟哦：多出来的 <strong>2 份</strong> 一共是 <strong>16 岁</strong>，那 1 份（弟弟）就是 <strong>16 ÷ 2</strong> 等于几呀？</span>`;
+          } else if (vMeimei === 24) {
+            fb.innerHTML = `<span>💡</span><span>弟弟 8 岁答对啦！不过 24 岁是加上魔法 4 岁后的哦，记得把借来的 4 岁还回去，或者直接用 <strong>弟弟 8 岁 + 原来相差的 12 岁</strong>！</span>`;
+          } else {
+            fb.innerHTML = `<span>💡</span><span>弟弟 8 岁答对啦！再看看小美：题目说小美比弟弟大 <strong>12 岁</strong>，所以 8 + 12 等于多少呢？</span>`;
+          }
+        }
+      });
+
+      document.getElementById('l4-reset').addEventListener('click', () => {
+        SoundFX.click();
+        renderLevel4();
+      });
+
+      document.getElementById('l4-next').addEventListener('click', () => goToLevel(5));
+    }
+
+    /* ==========================================================================
+       模块 10：第 5 关【终极实战闯关】独立破解新谜题（完整迁移 + 可选草稿纸）
+       ========================================================================== */
+    function renderLevel5() {
+      const stage = document.getElementById('stage-container');
+      let step1Done = false;
+      let allDone = false;
+      let scratchOpen = false;
+      let scratchTab = 'timeline';
+      let scratchPatched = false;
+
+      stage.innerHTML = `
+        <div class="level-header">
+          <div>
+            <span class="level-badge badge-boss">🏆 第5关 · 终极实战闯关（独立破案）</span>
+            <h2 style="margin:0; font-size:22px;">大侦探独立挑战：乐乐和天天今年各几岁？</h2>
+          </div>
+          <button class="btn btn-ghost" id="btn-toggle-scratch" type="button">🧰 召唤画图草稿纸</button>
+        </div>
+
+        <div class="clue-box">
+          🔎 终极谜题：乐乐 <span class="hl-blue">7 年前</span> 的年龄和天天 <span class="hl-yellow">5 年后</span> 的年龄 <span class="hl-coral">相等</span>。乐乐今年的年龄比天天的 <span class="hl-blue">3 倍</span> <span class="hl-coral">小 2 岁</span>。乐乐和天天今年各几岁？
+        </div>
+
+        <!-- 简洁两步答题区（支架进一步撤除） -->
+        <div class="step-task-card" id="l5-card-1">
+          <div class="step-task-header">
+            <span class="step-num-badge">第一步：先算年龄差</span>
+            <span style="font-size:13px; color:#8A7E6B; font-weight:700;">想想第1关的时间轴秘籍</span>
+          </div>
+          <div class="fill-line">
+            <span>乐乐比天天大</span>
+            <input class="num-input" id="l5-in-diff" type="text" inputmode="numeric" placeholder="?" autocomplete="off">
+            <span>岁</span>
+            <button class="btn btn-primary" id="l5-check-1" type="button" style="padding:10px 18px; font-size:15px;">检验第一步 ✓</button>
+          </div>
+          <div class="feedback-box" id="l5-fb-1"></div>
+        </div>
+
+        <div class="step-task-card" id="l5-card-2">
+          <div class="step-task-header">
+            <span class="step-num-badge">第二步：用补齐魔法算两人今年几岁</span>
+            <span style="font-size:13px; color:#8A7E6B; font-weight:700;">补齐 2 岁变整 3 份哦</span>
+          </div>
+          <div class="fill-line">
+            <span>天天今年 =</span>
+            <input class="num-input" id="l5-in-tiantian" type="text" inputmode="numeric" placeholder="?" autocomplete="off">
+            <span>岁，&nbsp;&nbsp;乐乐今年 =</span>
+            <input class="num-input" id="l5-in-lele" type="text" inputmode="numeric" placeholder="?" autocomplete="off">
+            <span>岁</span>
+            <button class="btn btn-success" id="l5-check-all" type="button" style="padding:10px 20px; font-size:16px;">🔍 提交破案报告</button>
+          </div>
+          <div class="feedback-box" id="l5-fb-2"></div>
+        </div>
+
+        ${createMiniKeypadHTML('点选输入数字：')}
+
+        <!-- 可折叠画图草稿纸（仅在孩子需要时展开） -->
+        <div class="scratchpad-drawer">
+          <div class="scratchpad-body" id="scratchpad-body">
+            <div class="tab-row">
+              <button class="tab-btn active" type="button" data-tab="timeline">📏 时间轴草图（第一步）</button>
+              <button class="tab-btn" type="button" data-tab="segment">🧩 线段图草图（第二步）</button>
+            </div>
+            <div id="scratchpad-content"></div>
+          </div>
+        </div>
+      `;
+
+      bindMiniKeypad('l5-in-diff');
+
+      // 渲染草稿纸内容
+      function renderScratchContent() {
+        const box = document.getElementById('scratchpad-content');
+        if (scratchTab === 'timeline') {
+          box.innerHTML = `
+            ${buildTimelineHTML({
+              id: 'tl-l5',
+              youngerName: '天天',
+              youngerAvatar: 'tiantian',
+              youngerWalk: 5,
+              olderName: '乐乐',
+              olderAvatar: 'lele',
+              olderWalk: 7,
+              diffLabel: '把 7 岁和 5 岁合起来 = ？岁'
+            })}
+            <div style="text-align:center;">
+              <button class="btn btn-blue" id="l5-tl-go" type="button" style="padding:8px 18px; font-size:14px;">▶️ 让乐乐和天天走一走</button>
+            </div>
+          `;
+          const runWalk = () => {
+            const tl = document.getElementById('tl-l5');
+            const segOlder = tl.querySelector('.tl-seg-older');
+            const segYounger = tl.querySelector('.tl-seg-younger');
+            const avOlder = tl.querySelector('[data-role="older"]');
+            const avYounger = tl.querySelector('[data-role="younger"]');
+            const flag = tl.querySelector('.tl-flag');
+            const brace = tl.querySelector('.tl-diff-brace');
+            const meetPct = segYounger.getAttribute('data-target');
+            segOlder.style.width = segOlder.getAttribute('data-target') + '%';
+            segOlder.classList.add('walked');
+            segYounger.style.width = meetPct + '%';
+            segYounger.classList.add('walked');
+            avOlder.style.left = meetPct + '%';
+            avYounger.style.left = meetPct + '%';
+            avYounger.classList.add('met-left');
+            avOlder.classList.add('met-right');
+            setTimeout(() => {
+              flag.classList.add('show');
+              brace.classList.add('show');
+            }, 400);
+          };
+          document.getElementById('l5-tl-go').addEventListener('click', () => {
+            SoundFX.step();
+            runWalk();
+          });
+          setTimeout(runWalk, 250);
+        } else {
+          box.innerHTML = `
+            <div class="segment-stage" style="margin:0;">
+              <div class="seg-grid">
+                <div class="seg-row">
+                  <div class="seg-char">${getAvatarSVG('tiantian')}<span class="seg-char-name">天天</span></div>
+                  <div class="seg-track">
+                    <div class="seg-align-line"></div>
+                    <div class="seg-unit seg-unit-younger">1 份</div>
+                  </div>
+                </div>
+                <div class="seg-row">
+                  <div class="seg-char">${getAvatarSVG('lele')}<span class="seg-char-name">乐乐</span></div>
+                  <div class="seg-track">
+                    <div class="seg-older-wrap">
+                      <div class="seg-slot"><div class="seg-blue-full">1 份</div></div>
+                      <div class="seg-slot"><div class="seg-blue-full">1 份</div></div>
+                      <div class="seg-slot">
+                        <div class="seg-blue-partial">1 份</div>
+                        <div class="seg-notch ${scratchPatched ? 'patched' : ''}" id="l5-notch">
+                          ${scratchPatched ? '+2岁' : '少2岁'}<span class="sparkle-burst">✨</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="seg-bracket-area">
+                <div class="seg-diff-bracket ${scratchPatched ? 'patched' : ''}" id="l5-bracket">
+                  <span class="seg-diff-pill" id="l5-diff-pill">${scratchPatched ? '12 + 2 = 14 岁（对应 2 份）' : '年龄差 = 12 岁'}</span>
+                </div>
+              </div>
+            </div>
+            <div style="text-align:center; margin-top:12px;">
+              <button class="btn btn-magic" id="l5-cast" type="button" style="padding:9px 18px; font-size:14px;">
+                ${scratchPatched ? '🔄 还原草图' : '✨ 在草稿纸上试试补齐 +2 岁'}
+              </button>
+            </div>
+          `;
+          document.getElementById('l5-cast').addEventListener('click', () => {
+            scratchPatched = !scratchPatched;
+            if (scratchPatched) SoundFX.magic(); else SoundFX.click();
+            renderScratchContent();
+          });
+        }
+      }
+
+      document.getElementById('btn-toggle-scratch').addEventListener('click', function () {
+        SoundFX.click();
+        scratchOpen = !scratchOpen;
+        const body = document.getElementById('scratchpad-body');
+        body.classList.toggle('open', scratchOpen);
+        this.textContent = scratchOpen ? '🧰 收起画图草稿纸' : '🧰 召唤画图草稿纸';
+        if (scratchOpen) renderScratchContent();
+      });
+
+      document.querySelectorAll('#scratchpad-body .tab-btn').forEach(tab => {
+        tab.addEventListener('click', () => {
+          SoundFX.click();
+          scratchTab = tab.getAttribute('data-tab');
+          document.querySelectorAll('#scratchpad-body .tab-btn').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          renderScratchContent();
+        });
+      });
+
+      // 检验第一步（年龄差 12）
+      function checkStep1() {
+        const inp = document.getElementById('l5-in-diff');
+        const fb = document.getElementById('l5-fb-1');
+        const val = Number(inp.value.trim());
+        if (val === 12) {
+          step1Done = true;
+          inp.classList.add('ok');
+          inp.disabled = true;
+          document.getElementById('l5-check-1').disabled = true;
+          document.getElementById('l5-card-1').classList.add('done');
+          fb.className = 'feedback-box show ok';
+          fb.innerHTML = `<span>✅</span><span>第一步完全正确！乐乐往回 7 岁 + 天天往前 5 岁 = <strong>12 岁</strong>！</span>`;
+          return true;
+        } else {
+          fb.className = 'feedback-box show hint';
+          fb.innerHTML = `<span>💡</span><span>年龄差还差一点哦！想想“7 年前”和“5 年后”相遇，两段路合起来是多少？（也可以点右上角【🧰 召唤画图草稿纸】帮忙！）</span>`;
+          return false;
+        }
+      }
+
+      document.getElementById('l5-check-1').addEventListener('click', () => {
+        if (step1Done) return;
+        if (checkStep1()) {
+          SoundFX.correct();
+          AppState.activeInputId = 'l5-in-tiantian';
+          document.getElementById('l5-in-tiantian').focus();
+        } else {
+          SoundFX.gentleTry();
+        }
+      });
+
+      // 提交完整破案报告
+      document.getElementById('l5-check-all').addEventListener('click', () => {
+        if (allDone) return;
+        const ok1 = step1Done || checkStep1();
+        if (!ok1) {
+          SoundFX.gentleTry();
+          return;
+        }
+
+        const inTian = document.getElementById('l5-in-tiantian');
+        const inLe = document.getElementById('l5-in-lele');
+        const fb2 = document.getElementById('l5-fb-2');
+        const vTian = Number(inTian.value.trim());
+        const vLe = Number(inLe.value.trim());
+
+        if (vTian === 7 && vLe === 19) {
+          allDone = true;
+          inTian.classList.add('ok');
+          inLe.classList.add('ok');
+          inTian.disabled = true;
+          inLe.disabled = true;
+          document.getElementById('l5-check-all').disabled = true;
+          document.getElementById('l5-card-2').classList.add('done');
+
+          fb2.className = 'feedback-box show ok';
+          fb2.innerHTML = `<span>🏆</span><span>破案成功！补齐 2 岁后 12 + 2 = 14 岁，天天 = 14 ÷ 2 = <strong>7 岁</strong>，乐乐 = 7 + 12 = <strong>19 岁</strong>！</span>`;
+          markLevelComplete(5);
+          setTimeout(() => openVictoryModal(), 650);
+        } else {
+          SoundFX.gentleTry();
+          fb2.className = 'feedback-box show hint';
+          if (vTian !== 7) {
+            fb2.innerHTML = `<span>💡</span><span>先算天天（1份）哦：年龄差是 12 岁，给乐乐补上 2 岁变成整 3 份，新年龄差是 <strong>12 + 2 = 14 岁</strong>，多出的 <strong>2 份</strong> 是 14 岁，那 1 份是多少呢？</span>`;
+          } else if (vLe === 21) {
+            fb2.innerHTML = `<span>💡</span><span>天天 7 岁答对啦！21 岁是借了魔法 2 岁后的哦，记得还回去（21 - 2），或者直接算 <strong>天天 7 岁 + 年龄差 12 岁</strong>！</span>`;
+          } else {
+            fb2.innerHTML = `<span>💡</span><span>天天 7 岁答对啦！乐乐比天天大 <strong>12 岁</strong>，算一算 7 + 12 等于几吧！</span>`;
+          }
+        }
+      });
+    }
+
+    function renderCurrentLevel() {
+      switch (AppState.currentLevel) {
+        case 1: renderLevel1(); break;
+        case 2: renderLevel2(); break;
+        case 3: renderLevel3(); break;
+        case 4: renderLevel4(); break;
+        case 5: renderLevel5(); break;
+      }
+    }
+
+    /* ==========================================================================
+       模块 11：Canvas 彩带庆祝引擎（零外部依赖，自适应屏幕大小）
+       ========================================================================== */
+    const Confetti = (function () {
+      let rafId = null;
+      let pieces = [];
+      let running = false;
+      const colors = ['#FF6B6B', '#FFD166', '#2EC4B6', '#5BC0EB', '#FF9F1C', '#A78BFA'];
+
+      function resizeCanvas(canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function spawn(w, h) {
+        pieces = Array.from({ length: 110 }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * -h,
+          w: 8 + Math.random() * 7,
+          h: 12 + Math.random() * 8,
+          vx: (Math.random() - 0.5) * 2.8,
+          vy: 2.5 + Math.random() * 3.8,
+          rot: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.16,
+          color: colors[Math.floor(Math.random() * colors.length)]
+        }));
+      }
+
+      function loop() {
+        if (!running) return;
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        pieces.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vrot;
+          if (p.y > canvas.height + 20) {
+            p.y = -20;
+            p.x = Math.random() * canvas.width;
+          }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+
+        rafId = requestAnimationFrame(loop);
+      }
+
+      return {
+        start() {
+          const canvas = document.getElementById('confetti-canvas');
+          resizeCanvas(canvas);
+          spawn(canvas.width, canvas.height);
+          running = true;
+          if (rafId) cancelAnimationFrame(rafId);
+          loop();
+        },
+        stop() {
+          running = false;
+          if (rafId) cancelAnimationFrame(rafId);
+          const canvas = document.getElementById('confetti-canvas');
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          }
+        },
+        onResize() {
+          if (!running) return;
+          const canvas = document.getElementById('confetti-canvas');
+          resizeCanvas(canvas);
+        }
+      };
+    })();
+
+    function openVictoryModal() {
+      SoundFX.victory();
+      document.getElementById('victory-modal').classList.add('open');
+      Confetti.start();
+    }
+
+    function closeVictoryModal() {
+      document.getElementById('victory-modal').classList.remove('open');
+      Confetti.stop();
+    }
+
+    /* ==========================================================================
+       模块 12：事件绑定与初始化
+       ========================================================================== */
+    window.onload = function () {
+      // 静音开关
+      const btnMute = document.getElementById('btn-mute');
+      btnMute.addEventListener('click', () => {
+        const isMuted = SoundFX.toggleMute();
+        btnMute.textContent = isMuted ? '🔇 已静音' : '🔊 音效开';
+        if (!isMuted) SoundFX.click();
+      });
+
+      // 教学原理说明弹窗
+      const pedModal = document.getElementById('pedagogy-modal');
+      document.getElementById('btn-pedagogy').addEventListener('click', () => {
+        SoundFX.click();
+        pedModal.classList.add('open');
+      });
+      const closePed = () => {
+        SoundFX.click();
+        pedModal.classList.remove('open');
+      };
+      document.getElementById('close-pedagogy').addEventListener('click', closePed);
+      document.getElementById('ok-pedagogy').addEventListener('click', closePed);
+      pedModal.addEventListener('click', (e) => {
+        if (e.target === pedModal) closePed();
+      });
+
+      // 教师演示模式切换（方便在教室白板自由跳转任意关卡）
+      document.getElementById('toggle-teacher-mode').addEventListener('change', function () {
+        AppState.teacherMode = this.checked;
+        renderProgressBar();
+      });
+
+      // 通关弹窗按钮
+      document.getElementById('btn-replay-all').addEventListener('click', () => {
+        SoundFX.click();
+        closeVictoryModal();
+        AppState.currentLevel = 1;
+        AppState.maxUnlocked = 1;
+        AppState.completed.clear();
+        renderProgressBar();
+        renderCurrentLevel();
+      });
+
+      document.getElementById('btn-review-any').addEventListener('click', () => {
+        SoundFX.click();
+        closeVictoryModal();
+        AppState.maxUnlocked = 5;
+        renderProgressBar();
+      });
+
+      window.addEventListener('resize', () => Confetti.onResize());
+
+      // 启动第 1 关
+      renderProgressBar();
+      renderCurrentLevel();
+    };
+  </script>
+</body>
+</html>
