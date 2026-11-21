@@ -3,8 +3,8 @@ layout: post
 title: "可能是最全面的github pages搭建个人博客教程"
 date:   2019-11-22
 tags: [geek]
-comments: true
-author: lemonchann
+permalink: /create-blog-with-github-pages/
+author: weiyinerzui
 ---
 
 作为一个程序员怎么能没有自己的个人博客呢，这里详细记录和分享我的博客搭建经验，让你轻轻松松拥有自己的博客网站。傻瓜式一站式教你用 github pages 来搭建博客，详细记录全过程，保证你能学会。
@@ -17,7 +17,7 @@ author: lemonchann
 
 话不多说，直接上图先来看下我的博客整体效果。[**点击在线预览我的博客**]( https://lemonchann.github.io/blog/)，个人比较喜欢这种简约的博客风格，不要花里胡哨但该有的功也都有。
 
-![blogPage](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/blogPage.png)
+*（原配图已失效）*
 
 
 
@@ -57,7 +57,7 @@ author: lemonchann
 
 [点这里我的博客地址](https://github.com/lemonchann/lemonchann.github.io)进去点击 fork，之后在你自己的仓库下会看到刚复制的仓库，以后的操作都在你自己的仓库进行，当然想感谢我写这个教程就帮我点个 start 吧！
 
-![fork博客](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/fork%E5%8D%9A%E5%AE%A2.png)
+*（原配图已失效）*
 
 **版权声明： fork之后_posts文件夹内容是我的博客文章，版权归我所有。你可以选择删除里面的文章替换上自己的博客文章，如需转载需要与我联系授权 **。
 
@@ -67,7 +67,7 @@ author: lemonchann
 
 进到你自己的博客仓库，**修改博客仓库名称成你自己的用户名**。因为 github page 解析的时候找的是这个 username.github.io的仓库名，**这一步非常重要**。
 
-![修改仓库名称](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E4%BF%AE%E6%94%B9%E4%BB%93%E5%BA%93%E5%90%8D%E7%A7%B0.png)
+![修改仓库名称](/images/posts/create-blog/step-03.png)
 
 此时，不出意外的话，打开域名 https://username.github.io 就能看到你刚搭建的博客了。*注意替换 username成你自己的github 用户名*。
 
@@ -77,19 +77,19 @@ author: lemonchann
 
 博客的配置文件是仓库根目录下的_config.yml文件，直接点开它编辑。
 
-![config文件](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/config%E6%96%87%E4%BB%B6.png)
+![config文件](/images/posts/create-blog/step-04.png)
 
 你还需要更改以下配置：
 
 ### 博客名称和描述
 
-![更改名称](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E6%9B%B4%E6%94%B9%E5%90%8D%E7%A7%B0.png)
+![更改名称](/images/posts/create-blog/step-05.png)
 
 分别是博客名称和描述，自己任意写点啥。
 
 ### 博客社交链接
 
-![更改社交链接](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E6%9B%B4%E6%94%B9%E7%A4%BE%E4%BA%A4%E9%93%BE%E6%8E%A5.png)
+*（原配图已失效）*
 
 这里配置社交链接按钮，没配的不显示，我现在配了知乎、邮箱、github账号三个。其他你想加自己加上就可以。
 
@@ -109,7 +109,7 @@ gitalk:
 
 原理是利用github的issues评论文章。其中clientID和clientSecret需要[点击这里创建](https://github.com/settings/applications/new)
 
-![创建gitalk鉴权app](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E5%88%9B%E5%BB%BAgitalk%E9%89%B4%E6%9D%83app.png)
+![创建gitalk鉴权app](/images/posts/create-blog/step-07.png)
 
 点绿色按钮创建，成功之后会得到以上两个id，修改配置即可。
 
@@ -124,7 +124,7 @@ google_analytics: UA-XXXXXXX-X
 
 下面是我的网站实时分析页面展示：
 
-![google分析页面](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/google%E5%88%86%E6%9E%90%E9%A1%B5%E9%9D%A2.png)
+![google分析页面](/images/posts/create-blog/step-08.png)
 
 由于不可描述的原因，国内注册账号可能会遇到问题，所有不配置也没关系。
 
@@ -142,7 +142,7 @@ url: https://yourname.github.io
 
 对_config.ymld的修改需要提交才能生效，点下图中绿色按钮提交。
 
-![配置提交](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E9%85%8D%E7%BD%AE%E6%8F%90%E4%BA%A4.png)
+![配置提交](/images/posts/create-blog/step-09.png)
 
 **done! 现在输入上面提到的博客地址，回车，你拥有了自己的博客。**
 
@@ -160,7 +160,7 @@ url: https://yourname.github.io
 
 另外，发现最近用我这个模板的同学越来越多，如果搭建过程中有什么问题，可以在我的公众号「后端技术学堂」讨论交流。
 
-![公众号二维码](https://upload-images.jianshu.io/upload_images/7842464-15f939ec039690f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![公众号二维码](/images/posts/create-blog/step-10.png)
 
 
 
@@ -172,7 +172,7 @@ url: https://yourname.github.io
 
 在官网下载，[点这里]( https://rubyinstaller.org/downloads/ )下载适合系统版本的 [Ruby+Devkit](https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.5-1/rubyinstaller-devkit-2.6.5-1-x64.exe) 包。安装，弹出的窗口选3
 
-![安装ruby](https://github.com/lemonchann/lemonchann.github.io/raw/master/images/2019-11-22-create_blog_with_github_pages/%E5%AE%89%E8%A3%85ruby.PNG)
+![安装ruby](/images/posts/create-blog/step-11.png)
 
 `gem -v` `ruby -v` 查看得到版本号就说明成功了。
 
@@ -193,13 +193,13 @@ url: https://yourname.github.io
 
 ` gem install jekyll`
 
-![jekyll安装](https://github.com/lemonchann/lemonchann.github.io/raw/master/images/2019-11-22-create_blog_with_github_pages/jekyll%E5%AE%89%E8%A3%85.PNG)
+![jekyll安装](/images/posts/create-blog/step-12.png)
 
 ### 预览博客
 
 ` jekyll server` 输入之后打开浏览器，不出意外输入localhost:4000即可看到博客内容。
 
-![jekyll_server成功](https://github.com/lemonchann/lemonchann.github.io/raw/master/images/2019-11-22-create_blog_with_github_pages/jekyll_server%E6%88%90%E5%8A%9F.PNG)
+![jekyll_server成功](/images/posts/create-blog/step-13.png)
 
 如果你没这么顺利，那以下的错误解决供参考
 
@@ -207,28 +207,28 @@ url: https://yourname.github.io
 
 - 缺少某个包
 
-![jekyll_error](https://github.com/lemonchann/lemonchann.github.io/raw/master/images/2019-11-22-create_blog_with_github_pages/jekyll_error.PNG)
+![jekyll_error](/images/posts/create-blog/step-14.png)
 
 如图，缺少jekyll-paginate，安装即可`gem install jekyll-paginate`若还提示缺少就装啥。
 
-![jekyll_server_erro错误2](https://github.com/lemonchann/lemonchann.github.io/raw/master/images/2019-11-22-create_blog_with_github_pages/jekyll_server_erro%E9%94%99%E8%AF%AF2.PNG)
+![jekyll_server_erro错误2](/images/posts/create-blog/step-15.png)
 
 - 权限拒绝
 
   socket.rb:201:in `bind` :Permission denied - bind(2) for 127.0.0.1:4000 (Error:EACCES)
 
-![jekyll_error_EASSE](https://github.com/lemonchann/lemonchann.github.io/raw/master/images/2019-11-22-create_blog_with_github_pages/jekyll_error_EASSE.png)
+![jekyll_error_EASSE](/images/posts/create-blog/step-16.png)
 
 出现这个错误一般是4000端口被占用了，解决方法：
 
 1.  netstat -ano|findstr "4000" 找到占用4000端口的进程ID
 
 2. 查看最后一列数字就是PID=312964
-   ![查看netstat](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E6%9F%A5%E7%9C%8Bnetstat.png)
+   ![查看netstat](/images/posts/create-blog/step-17.png)
 
 3. 打开windows资源管理器，结束该进程.
 
-   ![任务管理器](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86%E5%99%A8.png)
+   ![任务管理器](/images/posts/create-blog/step-18.png)
 
 4. `$ tasklist|findstr 312964`也能查看进程名，查到结束掉他同步骤3.
 
@@ -283,7 +283,7 @@ url: https://yourname.github.io
 
 配置完成，打开博客，你得到这样一个搜索框。
 
-![search_block](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/search_block.png)
+![search_block](/images/posts/create-blog/step-19.png)
 
 ## 搜索框样式
 
@@ -329,7 +329,7 @@ footer-links:
 
 主要是`path d=` 内容的获取，这里其实是指定svg图片的内容，我们可以从 [这里](https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/brands/)获取到大部分svg素材，比如知乎的svg[在这](https://github.com/FortAwesome/Font-Awesome/blob/master/svgs/brands/zhihu.svg)，点`raw` 按钮查看源文件，复制`path d=`后面的内容到上面的配置即可。
 
-![zhihuSvg](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/zhihuSvg.png)
+![zhihuSvg](/images/posts/create-blog/step-20.png)
 
 
 
@@ -375,7 +375,7 @@ eg.  `style="font-family:arial;color:Gainsboro;font-size:10px; text-align:right;
 
 在文章开头信息中心增加 `toc: true` 描述即可打开文章目录显示。效果如下：
 
-![文章带目录](https://i.loli.net/2020/07/12/TFlRj3kBdpocY9K.png)
+*（原配图已失效）*
 
 
 
@@ -385,7 +385,7 @@ eg.  `style="font-family:arial;color:Gainsboro;font-size:10px; text-align:right;
 
 PicGo支持图片上传github、SM.MS图床、阿里云、腾讯云等主流图床或云端。直接拖图片，上传云端、得到链接一步搞定，方便快捷。
 
-![PicGo](https://raw.githubusercontent.com/lemonchann/lemonchann.github.io/master/images/2019-11-22-create_blog_with_github_pages/PicGo.png)
+![PicGo](/images/posts/create-blog/step-22.png)
 
 ## 其他功能
 
@@ -413,4 +413,4 @@ _include/svg-icons.html生成社交头像的链接
 
 **我的个人技术公众号「后端技术学堂」分享、记录、成长，扫码添加，一起学习，共同成长。**
 
-![公众号二维码](https://upload-images.jianshu.io/upload_images/7842464-15f939ec039690f6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![公众号二维码](/images/posts/create-blog/step-10.png)

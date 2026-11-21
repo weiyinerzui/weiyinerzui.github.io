@@ -1,20 +1,44 @@
 ---
 layout: page
-title: About
+title: 关于
 permalink: /about/
 ---
 
-## 关于我
-你好，我是程序员柠檬。
+<div class="profile" markdown="0">
+  <img src="{{ site.baseurl }}/images/avatar.png" alt="微信公众号二维码">
+  <div>
+    <h2>weiyinerzui</h2>
+    <p>记录技术、审计备考与英语学习 · 公众号「走在学习的小路上」</p>
+  </div>
+  <div class="links">
+    <a href="https://space.bilibili.com/6708483" target="_blank" rel="noopener">B 站</a>
+    <a href="https://github.com/weiyinerzui" target="_blank" rel="noopener">GitHub</a>
+    <a href="mailto:weiyinerzui@126.com">邮箱</a>
+  </div>
+</div>
 
-国内一线互联网大厂计算机软件工程师、[知乎](https://www.zhihu.com/people/ning-meng-cheng-31-94)编程领域万赞答主。
+## 关于这个博客
 
-[个人技术公众号](https://mp.weixin.qq.com/mp/homepage?__biz=MzkwOTE2OTY1Nw==&hid=1&sn=6395e40d884ce4dd3900a68a0f5a6b87&scene=18#wechat_redirect)分享编程学习路线、编程学习资源，记录技术成长，欢迎扫码添加：
+这里主要放三类东西：技术上的折腾记录（比如这个博客是怎么搭起来的）、审计师与会计的备考笔记（很多是课堂转录，按段落整理过），以及一些英语和思维导图的整理。
 
-![公众号二维码](https://github.com/lemonchann/images/raw/master/gzh/%E6%96%87%E6%9C%AB%E6%8E%A8%E5%B9%BF%E6%96%87%E6%A1%88.png)
+写下来的目的很简单——学过的东西会忘，但整理过的会留下线索。
 
+## 常写的内容
 
+- **技术笔记**：GitHub Pages、Jekyll、各种小工具
+- **备考笔记**：审计师相关基础知识、会计考点梳理
+- **语言与整理**：英语习语、Markdown 思维导图
+
+## B 站
+
+除了写文章，也会在 B 站发一些视频与直播，主页在这里：<https://space.bilibili.com/6708483>
+
+## 公众号
+
+如果内容对你有用，也欢迎关注公众号「走在学习的小路上」，那里会同步更新。扫码即可关注：
+
+<img class="qr" src="{{ site.baseurl }}/images/wechat-qr.png" alt="公众号二维码">
 
 ## 版权声明
 
-博客文章是我原创文章，存档于_posts 文件夹下，版权归我所有，转载请与我联系获得授权许可。
+博客文章为原创整理，存档于 `_posts` 文件夹下，版权归我所有，转载请注明出处。

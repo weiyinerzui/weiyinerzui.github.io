@@ -1,44 +1,31 @@
 ---
-layout: page
+layout: default
 title: 标签
 permalink: /tags/
 ---
+<div class="wrap wrap--read tag-page">
+  <div class="page-head">
+    <h1>标签</h1>
+    <p>共 {{ site.tags | size }} 个标签。</p>
+  </div>
 
-{% if site.posts.size == 0 %}
-  <h2>No post found</h2>
-{% endif %}
-
-<div class="tags">
-  <ul class="label">
+  <div class="tag-cloud">
     {% for tag in site.tags %}
-    <li>
-      <a href="#{{ tag[0] }}">
-        <span>{{ tag[0] }}</span>
-        <span class="count">{{ tag[1] | size }}</span>
-      </a>
-    </li>
+      <a class="tag" href="#{{ tag[0] | slugify }}">{{ tag[0] }} <span class="count">{{ tag[1] | size }}</span></a>
     {% endfor %}
-  </ul>
+  </div>
 
   {% for tag in site.tags %}
-    <h2 id="{{ tag[0] }}">
-      {{ tag[0] }}
-    </h2>
-    <ul class="tag">
-      {% for post in tag[1] %}
-        {% if post.title != null %}
-          <li>
-            {% if post.link %}
-              <a href="{{ post.link }}">
-            {% else %}
-              <a href="{{ site.baseurl }}{{ post.url }}">
-            {% endif %}
-                {{ post.title }}
-              </a>
-              <time>{{ post.date | date: "%Y-%m-%d" }}</time>
+    <section class="tag-section" data-tag="{{ tag[0] }}">
+      <h2 id="t-{{ forloop.index }}">{{ tag[0] }}</h2>
+      <ul class="archive-year">
+        {% for post in tag[1] %}
+          <li class="archive-item">
+            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m-%d" }}</time>
+            <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a>
           </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
+        {% endfor %}
+      </ul>
+    </section>
   {% endfor %}
 </div>

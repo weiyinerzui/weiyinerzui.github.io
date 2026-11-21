@@ -1,3 +1,6 @@
 # jekyll local file
 .jekyll*
 _site
+
+# 本地预览产物
+__pycache__/

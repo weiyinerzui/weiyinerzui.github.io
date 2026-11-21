@@ -1,5 +1,14 @@
-{% include svg-icons.html %}
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-copy">&copy; {{ site.time | date: '%Y' }} {{ site.name }}</p>
 
-{% if site.footer-text %}
-<p>{{ site.footer-text }}</p>
-{% endif %}
+    <div class="footer-links">
+      <a href="https://space.bilibili.com/6708483" target="_blank" rel="noopener">B 站</a>
+      <a href="https://github.com/weiyinerzui" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:weiyinerzui@126.com">邮箱</a>
+      <a href="{{ site.baseurl }}/feed.xml">RSS</a>
+      <span class="views">访客 <span id="busuanzi_value_site_uv">–</span> · 浏览 <span id="busuanzi_value_site_pv">–</span></span>
+    </div>
+  </div>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</footer>
