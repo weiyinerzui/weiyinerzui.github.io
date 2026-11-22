@@ -16,7 +16,23 @@
         {% if nav_url contains '://' %}
           <a href="{{ nav_url }}" target="_blank" rel="noopener">{{ nav.name }}</a>
         {% else %}
-          <a href="{{ site.baseurl }}{{ nav_url }}"{% if page_url == nav_url or page_url == nav_slash %} class="is-active"{% endif %}>{{ nav.name }}</a>
+          {% assign is_active = false %}
+          {% if page_url == nav_url or page_url == nav_slash %}
+            {% assign is_active = true %}
+          {% endif %}
+          {% if nav_url == '/categories/' and page_url contains '/categories/' %}
+            {% assign is_active = true %}
+          {% endif %}
+          {% if nav_url == '/tags/' and page_url contains '/tags/' %}
+            {% assign is_active = true %}
+          {% endif %}
+          {% if nav_url == '/archive/' and page_url contains '/archive/' %}
+            {% assign is_active = true %}
+          {% endif %}
+          {% if nav_url == '/about/' and page_url contains '/about' %}
+            {% assign is_active = true %}
+          {% endif %}
+          <a href="{{ site.baseurl }}{{ nav_url }}"{% if is_active %} class="is-active"{% endif %}>{{ nav.name }}</a>
         {% endif %}
       {% endfor %}
     </nav>

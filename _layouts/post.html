@@ -6,12 +6,30 @@ layout: default
 <div class="wrap">
   <div class="article-shell">
     <article class="article">
-      <a class="back-link" href="{{ site.baseurl }}/archive/">← 全部文章</a>
+      <nav class="crumb" aria-label="面包屑">
+        <a href="{{ site.baseurl }}/">首页</a>
+        {% if page.categories and page.categories.size > 0 %}
+          <span class="crumb-sep">/</span>
+          <a href="{{ site.baseurl }}/categories/{{ page.categories | first }}/">{{ site.category_names[page.categories | first] }}</a>
+          {% if page.categories[1] %}
+            <span class="crumb-sep">/</span>
+            <a href="{{ site.baseurl }}/categories/{{ page.categories | first }}/{{ page.categories[1] }}/">{{ page.sub_name | default: page.categories[1] }}</a>
+          {% endif %}
+        {% endif %}
+      </nav>
 
       <h1>{{ page.title }}</h1>
 
       <div class="article-meta">
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+        {% if page.categories and page.categories.size > 0 %}
+          <span class="sep"></span>
+          <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ page.categories | first }}/">{{ site.category_names[page.categories | first] }}</a>
+          {% if page.categories[1] %}
+            <span class="crumb-sep">/</span>
+            <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ page.categories | first }}/{{ page.categories[1] }}/">{{ page.sub_name | default: page.categories[1] }}</a>
+          {% endif %}
+        {% endif %}
         {% if page.tags.size > 0 %}
           <span class="sep"></span>
           <div class="tags">

@@ -4,3 +4,7 @@ _site
 
 # 本地预览产物
 __pycache__/
+
+# 本地预览脚本
+_preview.py
+__pycache__/

@@ -3,9 +3,12 @@ layout: null
 ---
 [
   {% for post in site.posts %}
+    {% assign post_cat = site.category_names[post.categories | first] | default: '' %}
     {
       "title" : {{ post.title | jsonify }},
       "tags"  : {{ post.tags | join: ', ' | jsonify }},
+      "category" : {{ post_cat | jsonify }},
+      "cat_url" : "{{ site.baseurl }}/categories/{{ post.categories | first }}/",
       "url"   : "{{ site.baseurl }}{{ post.url }}",
       "date"  : "{{ post.date | date: '%Y-%m-%d' }}"
     }{% unless forloop.last %},{% endunless %}

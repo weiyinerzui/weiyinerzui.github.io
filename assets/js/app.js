@@ -84,6 +84,12 @@
       a.href = item.url;
       a.textContent = item.title;
       li.appendChild(a);
+      if (item.category) {
+        var c = document.createElement('span');
+        c.className = 'search-cat';
+        c.textContent = item.category;
+        li.appendChild(c);
+      }
       results.appendChild(li);
     });
     showPanel(true);
@@ -96,7 +102,8 @@
       loadIndex().then(function (data) {
         var hits = data.filter(function (p) {
           return (p.title || '').toLowerCase().indexOf(q) > -1 ||
-                 (p.tags || '').toLowerCase().indexOf(q) > -1;
+                 (p.tags || '').toLowerCase().indexOf(q) > -1 ||
+                 (p.category || '').toLowerCase().indexOf(q) > -1;
         });
         renderResults(hits, q);
       });

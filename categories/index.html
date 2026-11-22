@@ -1,0 +1,42 @@
+---
+layout: default
+title: 分类
+permalink: /categories/
+---
+<div class="wrap">
+  <div class="page-head page-head--wide">
+    <h1>分类</h1>
+    <p>按主题浏览全部文章。标签是跨栏目的关键词，见<a href="{{ site.baseurl }}/tags/">标签</a>。</p>
+  </div>
+
+  <div class="cat-grid">
+    {% for cat in site.category_tree %}
+      {% assign cat_posts = "" | split: "" %}
+      {% for post in site.posts %}
+        {% if post.categories[0] == cat.key %}
+          {% assign cat_posts = cat_posts | push: post %}
+        {% endif %}
+      {% endfor %}
+
+      <section class="cat-card">
+        <h2><a href="{{ site.baseurl }}/categories/{{ cat.key }}/">{{ cat.name }}</a></h2>
+        <p class="cat-desc">{{ cat.desc }}</p>
+        <p class="cat-count">{{ cat_posts.size }} 篇</p>
+
+        {% if cat.subs and cat.subs.size > 0 %}
+          <ul class="cat-sublist">
+            {% for s in cat.subs %}
+              {% assign n = 0 %}
+              {% for post in site.posts %}
+                {% if post.categories[0] == cat.key and post.categories[1] == s.key %}
+                  {% assign n = n | plus: 1 %}
+                {% endif %}
+              {% endfor %}
+              <li><a href="{{ site.baseurl }}/categories/{{ cat.key }}/{{ s.key }}/">{{ s.name }}</a><span class="n">{{ n }}</span></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </section>
+    {% endfor %}
+  </div>
+</div>

@@ -24,13 +24,101 @@ avatar: /images/avatar.png
 navigation:
   - name: 首页
     url: /
-  - name: 关于
-    url: /about/
+  - name: 分类
+    url: /categories/
   - name: 归档
     url: /archive/
   - name: 标签
     url: /tags/
+  - name: 关于
+    url: /about/
 
+
+# ---------------------------------------------------------------------------
+# 栏目分类（一级栏目 / 二级子栏目）
+# 文章的 categories 首项必须是这里的 key；URL 用 slug，显示用 name
+# 新增栏目：在 category_tree 加一段，再新建 <key>.md 页面文件
+# ---------------------------------------------------------------------------
+category_tree:
+  - key: xiaoyudi
+    name: 小羽滴
+    desc: 小羽滴的学习记录，按学科分。
+    subs:
+      - key: math
+        name: 数学
+      - key: chinese
+        name: 语文
+      - key: english
+        name: 英语
+      - key: science
+        name: 科学
+  - key: ai
+    name: AI
+    desc: 关注 AI 发展，记录学到的新东西。
+    subs:
+      - key: prompt
+        name: Prompt
+      - key: models
+        name: 模型与应用
+      - key: tooling
+        name: 工具链
+  - key: tech
+    name: 技术
+    desc: 建站、工具、各种折腾。
+    subs:
+      - key: blog
+        name: 博客
+  - key: study
+    name: 备考
+    desc: 审计师与会计的备考笔记。
+    subs:
+      - key: audit
+        name: 审计
+      - key: accounting
+        name: 会计
+  - key: english
+    name: 英语
+    desc: 成人英语学习，习语、写作、原著。
+    subs:
+      - key: idioms
+        name: 习语
+
+# Liquid 用的扁平映射（页面里显示中文名用；与 category_tree 保持一致）
+category_names:
+  xiaoyudi: 小羽滴
+  ai: AI
+  tech: 技术
+  study: 备考
+  english: 英语
+
+# 受控标签词表：建议只用这里的标签，避免同义词分裂
+# （校验脚本 tools/check_taxonomy.py 会提示不在表内的标签）
+tag_vocabulary:
+  - 小学数学
+  - 乘法
+  - 口算
+  - 陪读记录
+  - 教材
+  - prompt-engineering
+  - LLM
+  - Agent
+  - RAG
+  - AI 工具
+  - jekyll
+  - github-pages
+  - git
+  - 域名
+  - 审计
+  - 会计
+  - 考点
+  - 思维导图
+  - 真题
+  - idiom
+  - 习语
+  - 写作
+  - 原著
+  - 小工具
+  - 测试
 
 # Pagination
 paginate: 6

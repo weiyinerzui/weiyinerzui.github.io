@@ -6,16 +6,17 @@ permalink: /tags/
 <div class="wrap wrap--read tag-page">
   <div class="page-head">
     <h1>标签</h1>
-    <p>共 {{ site.tags | size }} 个标签。</p>
+    <p>标签是跨栏目的关键词，按主题浏览请看<a href="{{ site.baseurl }}/categories/">分类</a>。</p>
   </div>
 
+  {% assign tags_sorted = site.tags | sort %}
   <div class="tag-cloud">
-    {% for tag in site.tags %}
+    {% for tag in tags_sorted %}
       <a class="tag" href="#{{ tag[0] | slugify }}">{{ tag[0] }} <span class="count">{{ tag[1] | size }}</span></a>
     {% endfor %}
   </div>
 
-  {% for tag in site.tags %}
+  {% for tag in tags_sorted %}
     <section class="tag-section" data-tag="{{ tag[0] }}">
       <h2 id="t-{{ forloop.index }}">{{ tag[0] }}</h2>
       <ul class="archive-year">
