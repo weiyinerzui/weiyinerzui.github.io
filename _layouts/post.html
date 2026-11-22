@@ -6,14 +6,27 @@ layout: default
 <div class="wrap">
   <div class="article-shell">
     <article class="article">
+      {% assign post_cat_key = page.categories | first %}
+      {% assign post_cat_obj = site.category_tree | where: "key", post_cat_key | first %}
+      {% assign post_cat_name = post_cat_obj.name | default: post_cat_key %}
+      {% assign post_sub_name = "" %}
+      {% if page.categories[1] and post_cat_obj %}
+        {% for s in post_cat_obj.subs %}
+          {% if s.key == page.categories[1] %}
+            {% assign post_sub_name = s.name %}
+          {% endif %}
+        {% endfor %}
+        {% assign post_sub_name = post_sub_name | default: page.categories[1] %}
+      {% endif %}
+
       <nav class="crumb" aria-label="面包屑">
         <a href="{{ site.baseurl }}/">首页</a>
         {% if page.categories and page.categories.size > 0 %}
           <span class="crumb-sep">/</span>
-          <a href="{{ site.baseurl }}/categories/{{ page.categories | first }}/">{{ site.category_names[page.categories | first] }}</a>
+          <a href="{{ site.baseurl }}/categories/{{ post_cat_key }}/">{{ post_cat_name }}</a>
           {% if page.categories[1] %}
             <span class="crumb-sep">/</span>
-            <a href="{{ site.baseurl }}/categories/{{ page.categories | first }}/{{ page.categories[1] }}/">{{ page.sub_name | default: page.categories[1] }}</a>
+            <a href="{{ site.baseurl }}/categories/{{ post_cat_key }}/{{ page.categories[1] }}/">{{ post_sub_name }}</a>
           {% endif %}
         {% endif %}
       </nav>
@@ -24,10 +37,10 @@ layout: default
         <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
         {% if page.categories and page.categories.size > 0 %}
           <span class="sep"></span>
-          <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ page.categories | first }}/">{{ site.category_names[page.categories | first] }}</a>
+          <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ post_cat_key }}/">{{ post_cat_name }}</a>
           {% if page.categories[1] %}
             <span class="crumb-sep">/</span>
-            <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ page.categories | first }}/{{ page.categories[1] }}/">{{ page.sub_name | default: page.categories[1] }}</a>
+            <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ post_cat_key }}/{{ page.categories[1] }}/">{{ post_sub_name }}</a>
           {% endif %}
         {% endif %}
         {% if page.tags.size > 0 %}

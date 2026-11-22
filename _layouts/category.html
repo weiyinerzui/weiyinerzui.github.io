@@ -1,6 +1,21 @@
 ---
 layout: default
 ---
+{% comment %}从 category_tree 解析当前栏目的中文名/描述/子栏目（页面文件只写 key）{% endcomment %}
+{% assign cat_obj = site.category_tree | where: "key", page.category | first %}
+{% assign cat_name = cat_obj.name | default: page.category %}
+{% assign cat_desc = cat_obj.desc | default: "" %}
+{% assign cat_subs = cat_obj.subs | default: "" %}
+{% assign sub_name = "" %}
+{% if page.subcategory %}
+  {% for s in cat_subs %}
+    {% if s.key == page.subcategory %}
+      {% assign sub_name = s.name %}
+    {% endif %}
+  {% endfor %}
+  {% assign sub_name = sub_name | default: page.subcategory %}
+{% endif %}
+
 <div class="wrap wrap--read cat-page">
 
   <nav class="crumb" aria-label="面包屑">
@@ -9,47 +24,42 @@ layout: default
     <a href="{{ site.baseurl }}/categories/">分类</a>
     {% if page.subcategory %}
       <span class="crumb-sep">/</span>
-      <a href="{{ site.baseurl }}/categories/{{ page.category }}/">{{ page.cat_name }}</a>
+      <a href="{{ site.baseurl }}/categories/{{ page.category }}/">{{ cat_name }}</a>
       <span class="crumb-sep">/</span>
-      <span class="crumb-current">{{ page.sub_name }}</span>
+      <span class="crumb-current">{{ sub_name }}</span>
     {% else %}
       <span class="crumb-sep">/</span>
-      <span class="crumb-current">{{ page.cat_name }}</span>
+      <span class="crumb-current">{{ cat_name }}</span>
     {% endif %}
   </nav>
 
   <div class="page-head">
-    <h1>{% if page.subcategory %}{{ page.sub_name }}{% else %}{{ page.cat_name }}{% endif %}</h1>
-    <p>{% if page.subcategory %}{{ page.cat_name }} · {% endif %}{{ page.cat_desc }}</p>
+    <h1>{% if page.subcategory %}{{ sub_name }}{% else %}{{ cat_name }}{% endif %}</h1>
+    <p>{% if page.subcategory %}{{ cat_name }} · {% endif %}{{ cat_desc }}</p>
   </div>
 
-  {% comment %}子栏目切换：一级页用 subs，子栏目页用 parent_subs{% endcomment %}
-  {% assign tab_list = page.subs | default: page.parent_subs %}
-  {% if tab_list and tab_list.size > 1 %}
+  {% if cat_subs.size > 1 %}
     <nav class="cat-tabs" aria-label="子栏目">
       <a href="{{ site.baseurl }}/categories/{{ page.category }}/"{% unless page.subcategory %} class="is-active"{% endunless %}>全部</a>
-      {% for s in tab_list %}
+      {% for s in cat_subs %}
         <a href="{{ site.baseurl }}/categories/{{ page.category }}/{{ s.key }}/"{% if page.subcategory == s.key %} class="is-active"{% endif %}>{{ s.name }}</a>
       {% endfor %}
     </nav>
   {% endif %}
 
   {% comment %}取文章：子栏目页按 父+子 双条件过滤；一级页取该栏目全部{% endcomment %}
-  {% if page.subcategory %}
-    {% assign cat_posts = "" | split: "" %}
-    {% for post in site.posts %}
+  {% assign cat_posts = "" | split: "" %}
+  {% for post in site.posts %}
+    {% if page.subcategory %}
       {% if post.categories[0] == page.category and post.categories[1] == page.subcategory %}
         {% assign cat_posts = cat_posts | push: post %}
       {% endif %}
-    {% endfor %}
-  {% else %}
-    {% assign cat_posts = "" | split: "" %}
-    {% for post in site.posts %}
+    {% else %}
       {% if post.categories[0] == page.category %}
         {% assign cat_posts = cat_posts | push: post %}
       {% endif %}
-    {% endfor %}
-  {% endif %}
+    {% endif %}
+  {% endfor %}
 
   {% if cat_posts.size > 0 %}
     <div class="post-list">

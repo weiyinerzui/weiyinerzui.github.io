@@ -3,7 +3,9 @@ layout: null
 ---
 [
   {% for post in site.posts %}
-    {% assign post_cat = site.category_names[post.categories | first] | default: '' %}
+    {% assign pc_key = post.categories | first %}
+    {% assign pc_obj = site.category_tree | where: "key", pc_key | first %}
+    {% assign post_cat = pc_obj.name %}
     {
       "title" : {{ post.title | jsonify }},
       "tags"  : {{ post.tags | join: ', ' | jsonify }},

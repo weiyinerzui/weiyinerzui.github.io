@@ -2,12 +2,15 @@
   文章卡片。参数：post（必需）。
   首页 / 栏目页 / 归档共用，保证样式一致。
 {% endcomment %}
+{% assign card_cat_key = post.categories | first %}
+{% assign card_cat_obj = site.category_tree | where: "key", card_cat_key | first %}
+{% assign card_cat_name = card_cat_obj.name | default: card_cat_key %}
 <article class="post-card" data-title="{{ post.title | downcase }}" data-tags="{{ post.tags | join: ' ' | downcase }}" data-cat="{{ post.categories | first }}">
   <div class="meta-row">
     <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
     {% if post.categories and post.categories.size > 0 %}
       <span class="sep"></span>
-      <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ post.categories | first }}/">{{ site.category_names[post.categories | first] }}</a>
+      <a class="tag tag--cat" href="{{ site.baseurl }}/categories/{{ card_cat_key }}/">{{ card_cat_name }}</a>
     {% endif %}
     {% for tag in post.tags %}
       <a class="tag" href="{{ site.baseurl }}/tags/#{{ tag | slugify }}">{{ tag }}</a>

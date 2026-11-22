@@ -83,14 +83,6 @@ category_tree:
       - key: idioms
         name: 习语
 
-# Liquid 用的扁平映射（页面里显示中文名用；与 category_tree 保持一致）
-category_names:
-  xiaoyudi: 小羽滴
-  ai: AI
-  tech: 技术
-  study: 备考
-  english: 英语
-
 # 受控标签词表：建议只用这里的标签，避免同义词分裂
 # （校验脚本 tools/check_taxonomy.py 会提示不在表内的标签）
 tag_vocabulary:
